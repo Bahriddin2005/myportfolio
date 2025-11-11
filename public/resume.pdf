@@ -1,0 +1,116 @@
+%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/Resources <<
+/Font <<
+/F1 4 0 R
+>>
+>>
+/MediaBox [0 0 612 792]
+/Contents 5 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Helvetica-Bold
+>>
+endobj
+5 0 obj
+<<
+/Length 800
+>>
+stream
+BT
+/F1 24 Tf
+50 720 Td
+(BAHRIDDIN) Tj
+0 -30 Td
+/F1 14 Tf
+(Full-Stack Developer & Product Designer) Tj
+0 -40 Td
+/F1 12 Tf
+(Email: hello@bahriddin.dev) Tj
+0 -20 Td
+(Telegram: @baxadevuz) Tj
+0 -20 Td
+(Location: Buxoro, Uzbekistan) Tj
+0 -40 Td
+/F1 16 Tf
+(EXPERIENCE) Tj
+0 -25 Td
+/F1 12 Tf
+(3+ years Full-Stack Development) Tj
+0 -20 Td
+(- Built 15+ web platforms) Tj
+0 -20 Td
+(- Served 10K+ users) Tj
+0 -20 Td
+(- Generated $50K+ revenue) Tj
+0 -40 Td
+/F1 16 Tf
+(KEY PROJECTS) Tj
+0 -25 Td
+/F1 12 Tf
+(1. Buxoro Bilimdonlar - Education Platform) Tj
+0 -15 Td
+(   Django, React, PostgreSQL - 10K+ users) Tj
+0 -25 Td
+(2. CodeLab - Bootcamp Platform) Tj
+0 -15 Td
+(   Next.js, TypeScript, MongoDB - 500+ students) Tj
+0 -25 Td
+(3. Smart Inventory - Management System) Tj
+0 -15 Td
+(   Django, Vue.js, PostgreSQL - 20+ businesses) Tj
+0 -40 Td
+/F1 16 Tf
+(TECHNICAL SKILLS) Tj
+0 -25 Td
+/F1 12 Tf
+(Frontend: React, Next.js, Vue.js, Tailwind CSS) Tj
+0 -20 Td
+(Backend: Django, Node.js, Express, FastAPI) Tj
+0 -20 Td
+(Database: PostgreSQL, MongoDB, Redis) Tj
+0 -20 Td
+(Tools: Git, Docker, AWS, Vercel) Tj
+0 -40 Td
+/F1 10 Tf
+(For full resume, visit: https://bahriddin.dev/resume) Tj
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+0000000244 00000 n
+0000000328 00000 n
+trailer
+<<
+/Size 6
+/Root 1 0 R
+>>
+startxref
+1178
+%%EOF
+
