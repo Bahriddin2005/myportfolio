@@ -1,11 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  
+  // Image optimization
   images: {
     domains: ['localhost'],
     formats: ['image/avif', 'image/webp'],
+    unoptimized: false,
   },
-  // SEO optimization
+  
+  // Compression
+  compress: true,
+  
+  // Production optimizations
+  swcMinify: true,
+  
+  // Trailing slash
+  trailingSlash: false,
+  
+  // Security & Performance headers
   async headers() {
     return [
       {
@@ -26,10 +39,20 @@ const nextConfig = {
           {
             key: 'Referrer-Policy',
             value: 'origin-when-cross-origin'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()'
           }
         ]
       }
     ]
+  },
+  
+  // Environment variables that should be available on the client side
+  env: {
+    SITE_URL: process.env.SITE_URL || 'http://localhost:3000',
+    SITE_NAME: 'Bahriddin Portfolio',
   }
 }
 
