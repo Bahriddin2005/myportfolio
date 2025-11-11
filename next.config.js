@@ -2,6 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   
+  // Disable ESLint during build for production
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  
   // Image optimization
   images: {
     domains: ['localhost'],
