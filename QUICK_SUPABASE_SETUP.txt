@@ -1,0 +1,55 @@
+═══════════════════════════════════════════════════════════
+🚀 SUPABASE QUICK SETUP - 5 DAQIQA
+═══════════════════════════════════════════════════════════
+
+📋 QISQA QO'LLANMA:
+
+1️⃣ ACCOUNT OCHISH (2 min)
+   ├─ https://supabase.com
+   ├─ "Start your project" → GitHub login
+   ├─ "New project" → Name: portfolio-chat
+   └─ 2 minut kutish (database yaratilmoqda...)
+
+2️⃣ DATABASE YARATISH (1 min)
+   ├─ SQL Editor → New query
+   ├─ supabase-setup.sql faylini ochish
+   ├─ Copy-paste qilish
+   └─ "Run" bosish → ✅ Success!
+
+3️⃣ KEYS OLISH (1 min)
+   ├─ Settings → API
+   ├─ Copy: Project URL
+   └─ Copy: anon/public key
+
+4️⃣ .ENV.LOCAL YARATISH (30 sek)
+   ├─ Loyihada .env.local fayl yaratish
+   ├─ NEXT_PUBLIC_SUPABASE_URL=your-url
+   └─ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-key
+
+5️⃣ INSTALL (30 sek)
+   └─ npm install @supabase/supabase-js
+
+═══════════════════════════════════════════════════════════
+
+📤 MENGA YUBORING:
+
+Project URL: ____________________________________
+Anon Key: ________________________________________
+
+═══════════════════════════════════════════════════════════
+
+✅ KEYIN MEN:
+   → ChatWidget update
+   → Admin panel update
+   → Test
+   → Deploy
+   → TAYYOR! 🎉
+
+═══════════════════════════════════════════════════════════
+
+⏱️ TOTAL VAQT: 5 daqiqa (siz) + 10 daqiqa (men) = 15 daqiqa
+
+💰 NARX: 100% BEPUL FOREVER!
+
+═══════════════════════════════════════════════════════════
+
