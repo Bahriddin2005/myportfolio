@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import * as chatService from '../lib/chatService'
 
 export default function Administration() {
   const router = useRouter()
@@ -73,32 +74,24 @@ export default function Administration() {
     const savedProjects = localStorage.getItem('portfolioProjects')
     if (savedProjects) setProjects(JSON.parse(savedProjects))
     
-    // Load chat messages
-    const loadChatMessages = () => {
-      const chats = localStorage.getItem('chatMessages')
-      console.log('🔍 Admin Loading Chats:', chats ? JSON.parse(chats).length : 0, 'chats found')
-      if (chats) {
-        const parsed = JSON.parse(chats)
-        console.log('📨 Chat Details:', parsed)
-        setChatMessages(parsed)
-      } else {
-        console.log('⚠️ No chatMessages found in localStorage')
-      }
-    }
-    loadChatMessages()
-    
-    // Refresh chat messages and typing status every 1 second
-    const interval = setInterval(() => {
-      loadChatMessages()
+    // Load chat messages from database
+    const loadChatMessages = async () => {
+      const sessions = await chatService.getAllSessions()
+      setChatMessages(sessions)
       
-      // Update selected chat with latest messages
+      // Update selected chat if viewing one
       if (selectedChat) {
-        const chats = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-        const updated = chats.find(c => c.id === selectedChat.id)
+        const updated = sessions.find(c => c.id === selectedChat.id)
         if (updated) {
           setSelectedChat(updated)
         }
       }
+    }
+    loadChatMessages()
+    
+    // Refresh chat messages every 2 seconds
+    const interval = setInterval(() => {
+      loadChatMessages()
       
       // Check typing status for all chats
       const typingStatus = {}
@@ -183,34 +176,27 @@ export default function Administration() {
     setTimeout(() => toast.remove(), 2000)
   }
 
-  const sendAdminReply = (sessionId) => {
+  const sendAdminReply = async (sessionId) => {
     if (!adminReply.trim()) return
 
-    const chatHistory = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-    const chatIndex = chatHistory.findIndex(c => c.id === sessionId)
+    const replyText = adminReply
+    setAdminReply('')
     
-    if (chatIndex >= 0) {
-      const adminMessage = {
-        id: chatHistory[chatIndex].messages.length + 1,
-        sender: 'admin',
-        text: adminReply,
-        time: new Date().toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' }),
-        timestamp: new Date().toISOString()
+    // Clear typing indicator
+    localStorage.removeItem('adminTyping_' + sessionId)
+    
+    // Send to database
+    const result = await chatService.sendMessage(sessionId, 'admin', replyText)
+    
+    if (result.success) {
+      // Reload messages
+      const sessions = await chatService.getAllSessions()
+      setChatMessages(sessions)
+      
+      const updated = sessions.find(c => c.id === sessionId)
+      if (updated) {
+        setSelectedChat(updated)
       }
-      
-      chatHistory[chatIndex].messages.push(adminMessage)
-      chatHistory[chatIndex].unread = false
-      chatHistory[chatIndex].adminReplied = true
-      
-      localStorage.setItem('chatMessages', JSON.stringify(chatHistory))
-      
-      // Clear typing indicator
-      localStorage.removeItem('adminTyping_' + sessionId)
-      
-      // Update state immediately
-      setChatMessages(chatHistory)
-      setSelectedChat(chatHistory[chatIndex])
-      setAdminReply('')
 
       // Auto-scroll to bottom
       setTimeout(() => {
@@ -220,7 +206,6 @@ export default function Administration() {
         }
       }, 100)
 
-      // Show success toast
       showToast('Reply sent successfully!')
     }
   }
@@ -237,22 +222,27 @@ export default function Administration() {
     }
   }
 
-  const markAsRead = (sessionId) => {
-    const chatHistory = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-    const chatIndex = chatHistory.findIndex(c => c.id === sessionId)
-    if (chatIndex >= 0) {
-      chatHistory[chatIndex].unread = false
-      localStorage.setItem('chatMessages', JSON.stringify(chatHistory))
-      setChatMessages(chatHistory)
-    }
+  const markAsRead = async (sessionId) => {
+    // Mark as read in local state (unread is just UI state for admin)
+    const updated = chatMessages.map(chat => 
+      chat.id === sessionId ? { ...chat, unread: false } : chat
+    )
+    setChatMessages(updated)
   }
 
-  const deleteChat = (sessionId) => {
+  const deleteChat = async (sessionId) => {
     if (confirm('Delete this conversation?')) {
-      const chatHistory = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-      const filtered = chatHistory.filter(c => c.id !== sessionId)
-      localStorage.setItem('chatMessages', JSON.stringify(filtered))
-      setChatMessages(filtered)
+      // Delete all messages in this session
+      const session = chatMessages.find(c => c.id === sessionId)
+      if (session && session.messages) {
+        for (const msg of session.messages) {
+          await chatService.deleteMessage(sessionId, msg.id)
+        }
+      }
+      
+      // Reload sessions
+      const sessions = await chatService.getAllSessions()
+      setChatMessages(sessions)
       setSelectedChat(null)
       showToast('Chat deleted!')
     }
@@ -263,41 +253,39 @@ export default function Administration() {
     setEditedText(currentText)
   }
 
-  const saveEditedMessage = (sessionId, messageId) => {
+  const saveEditedMessage = async (sessionId, messageId) => {
     if (!editedText.trim()) return
 
-    const chatHistory = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-    const chatIndex = chatHistory.findIndex(c => c.id === sessionId)
+    await chatService.updateMessage(sessionId, messageId, editedText)
     
-    if (chatIndex >= 0) {
-      const messageIndex = chatHistory[chatIndex].messages.findIndex(m => m.id === messageId)
-      if (messageIndex >= 0) {
-        chatHistory[chatIndex].messages[messageIndex].text = editedText
-        chatHistory[chatIndex].messages[messageIndex].edited = true
-        chatHistory[chatIndex].messages[messageIndex].editedAt = new Date().toISOString()
-        
-        localStorage.setItem('chatMessages', JSON.stringify(chatHistory))
-        setChatMessages(chatHistory)
-        setSelectedChat(chatHistory[chatIndex])
-        setEditingMessageId(null)
-        setEditedText('')
-        showToast('Message updated!')
-      }
+    // Reload messages
+    const sessions = await chatService.getAllSessions()
+    setChatMessages(sessions)
+    
+    const updated = sessions.find(c => c.id === sessionId)
+    if (updated) {
+      setSelectedChat(updated)
     }
+    
+    setEditingMessageId(null)
+    setEditedText('')
+    showToast('Message updated!')
   }
 
-  const deleteMessage = (sessionId, messageId) => {
+  const deleteMessage = async (sessionId, messageId) => {
     if (confirm('Delete this message?')) {
-      const chatHistory = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-      const chatIndex = chatHistory.findIndex(c => c.id === sessionId)
+      await chatService.deleteMessage(sessionId, messageId)
       
-      if (chatIndex >= 0) {
-        chatHistory[chatIndex].messages = chatHistory[chatIndex].messages.filter(m => m.id !== messageId)
-        localStorage.setItem('chatMessages', JSON.stringify(chatHistory))
-        setChatMessages(chatHistory)
-        setSelectedChat(chatHistory[chatIndex])
-        showToast('Message deleted!')
+      // Reload messages
+      const sessions = await chatService.getAllSessions()
+      setChatMessages(sessions)
+      
+      const updated = sessions.find(c => c.id === sessionId)
+      if (updated) {
+        setSelectedChat(updated)
       }
+      
+      showToast('Message deleted!')
     }
   }
 

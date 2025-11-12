@@ -7,9 +7,12 @@
 CREATE TABLE IF NOT EXISTS chat_sessions (
   id TEXT PRIMARY KEY,
   last_message TEXT,
+  last_message_time TIMESTAMPTZ DEFAULT NOW(),
   timestamp TIMESTAMPTZ DEFAULT NOW(),
   unread BOOLEAN DEFAULT true,
   admin_replied BOOLEAN DEFAULT false,
+  user_agent TEXT,
+  ip_address TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );

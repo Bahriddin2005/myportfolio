@@ -21,15 +21,30 @@ export default async function handler(req, res) {
 
     // Check if Supabase is enabled
     if (!supabase) {
-      return res.status(503).json({ error: 'Database not configured' })
+      // Return success with mock message - chatService will use localStorage
+      return res.status(200).json({ 
+        success: false, 
+        useLocalStorage: true,
+        message: 'Database not configured, use localStorage'
+      })
     }
 
     // 1. Ensure session exists
-    const { data: existingSession } = await supabase
+    const { data: existingSession, error: sessionCheckError } = await supabase
       .from('chat_sessions')
       .select('id')
       .eq('id', sessionId)
       .single()
+
+    if (sessionCheckError && sessionCheckError.code !== 'PGRST116') {
+      // PGRST116 = no rows returned, which is fine (we'll create it)
+      // Any other error means table doesn't exist or connection failed
+      return res.status(200).json({ 
+        success: false, 
+        useLocalStorage: true,
+        message: 'Database error, use localStorage'
+      })
+    }
 
     if (!existingSession) {
       // Create session if it doesn't exist
@@ -43,8 +58,11 @@ export default async function handler(req, res) {
         }])
 
       if (sessionError) {
-        console.error('Session creation error:', sessionError)
-        return res.status(500).json({ error: 'Failed to create session' })
+        return res.status(200).json({ 
+          success: false, 
+          useLocalStorage: true,
+          message: 'Failed to create session, use localStorage'
+        })
       }
     }
 
@@ -60,24 +78,37 @@ export default async function handler(req, res) {
       .single()
 
     if (messageError) {
-      console.error('Message insert error:', messageError)
-      return res.status(500).json({ error: 'Failed to send message' })
+      return res.status(200).json({ 
+        success: false, 
+        useLocalStorage: true,
+        message: 'Failed to send message, use localStorage'
+      })
     }
 
-    // 3. Update session unread status
-    if (sender === 'user') {
-      await supabase
-        .from('chat_sessions')
-        .update({ unread: true })
-        .eq('id', sessionId)
-    } else if (sender === 'admin') {
-      await supabase
-        .from('chat_sessions')
-        .update({ unread: false })
-        .eq('id', sessionId)
+    // 3. Update session with last message info
+    await supabase
+      .from('chat_sessions')
+      .update({ 
+        last_message: text,
+        last_message_time: new Date().toISOString(),
+        unread: sender === 'user' ? true : false 
+      })
+      .eq('id', sessionId)
+
+    // Format message for return
+    const formattedMessage = {
+      id: message.id,
+      sender: message.sender,
+      text: message.text,
+      time: new Date(message.created_at).toLocaleTimeString('uz-UZ', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      }),
+      timestamp: message.created_at,
+      edited: false
     }
 
-    return res.status(200).json({ success: true, message })
+    return res.status(200).json({ success: true, message: formattedMessage })
 
   } catch (error) {
     console.error('Send message error:', error)

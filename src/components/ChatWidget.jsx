@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import * as chatService from '../lib/chatService'
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
@@ -13,6 +14,7 @@ export default function ChatWidget() {
   const lastNotificationTimeRef = React.useRef(0)
   const [unreadAdminMessages, setUnreadAdminMessages] = useState(0)
   const lastReadMessageIdRef = React.useRef(null)
+  const [sessionId, setSessionId] = useState(null)
 
   const handleUserTyping = (text) => {
     setInputText(text)
@@ -26,21 +28,12 @@ export default function ChatWidget() {
     }
   }
 
-  const deleteUserMessage = (messageId) => {
+  const deleteUserMessage = async (messageId) => {
     if (confirm('Bu xabarni o\'chirmoqchimisiz?')) {
-      const updatedMessages = messages.filter(msg => msg.id !== messageId)
-      setMessages(updatedMessages)
-
-      // Update localStorage
-      const sessionId = localStorage.getItem('chatSessionId')
       if (sessionId) {
-        const chatHistory = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-        const chatIndex = chatHistory.findIndex(c => c.id === sessionId)
-        
-        if (chatIndex >= 0) {
-          chatHistory[chatIndex].messages = updatedMessages
-          localStorage.setItem('chatMessages', JSON.stringify(chatHistory))
-        }
+        await chatService.deleteMessage(sessionId, messageId)
+        const updatedMessages = messages.filter(msg => msg.id !== messageId)
+        setMessages(updatedMessages)
       }
     }
   }
@@ -50,26 +43,18 @@ export default function ChatWidget() {
     setEditedText(currentText)
   }
 
-  const saveEditedMessage = (messageId) => {
+  const saveEditedMessage = async (messageId) => {
     if (!editedText.trim()) return
 
-    const updatedMessages = messages.map(msg => 
-      msg.id === messageId 
-        ? { ...msg, text: editedText, edited: true, editedAt: new Date().toISOString() }
-        : msg
-    )
-    setMessages(updatedMessages)
-
-    // Update localStorage
-    const sessionId = localStorage.getItem('chatSessionId')
     if (sessionId) {
-      const chatHistory = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-      const chatIndex = chatHistory.findIndex(c => c.id === sessionId)
+      await chatService.updateMessage(sessionId, messageId, editedText)
       
-      if (chatIndex >= 0) {
-        chatHistory[chatIndex].messages = updatedMessages
-        localStorage.setItem('chatMessages', JSON.stringify(chatHistory))
-      }
+      const updatedMessages = messages.map(msg => 
+        msg.id === messageId 
+          ? { ...msg, text: editedText, edited: true, editedAt: new Date().toISOString() }
+          : msg
+      )
+      setMessages(updatedMessages)
     }
 
     setEditingMessageId(null)
@@ -181,31 +166,32 @@ export default function ChatWidget() {
     }
   }
 
-  // Load saved messages from localStorage on component mount
+  // Load saved messages on component mount
   React.useEffect(() => {
-    const loadSavedMessages = () => {
-      const sessionId = localStorage.getItem('chatSessionId')
+    const loadSavedMessages = async () => {
+      // Get or create session ID
+      const sid = chatService.generateSessionId()
+      setSessionId(sid)
       
-      if (sessionId) {
-        // Load existing session messages
-        const chatHistory = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-        const currentSession = chatHistory.find(c => c.id === sessionId)
-        
-        if (currentSession && currentSession.messages && currentSession.messages.length > 0) {
-          setMessages(currentSession.messages)
-          setMessagesLoaded(true)
-          return
-        }
-      }
+      // Load messages from Supabase/localStorage
+      const loadedMessages = await chatService.getMessages(sid)
       
-      // No existing session or no messages - show welcome message
-      if (messages.length === 0) {
+      if (loadedMessages && loadedMessages.length > 0) {
+        setMessages(loadedMessages)
+        setMessagesLoaded(true)
+      } else {
+        // No existing messages - show welcome message
         const welcomeMessage = {
-          id: 1,
+          id: Date.now(),
           sender: 'bot',
           text: 'Assalomu alaykum! 👋 Men Bahriddin. Sizga qanday yordam bera olaman?',
-          time: 'hozir'
+          time: 'hozir',
+          timestamp: new Date().toISOString()
         }
+        
+        // Save welcome message to database
+        await chatService.sendMessage(sid, 'bot', welcomeMessage.text)
+        
         setMessages([welcomeMessage])
         setMessagesLoaded(true)
       }
@@ -233,29 +219,23 @@ export default function ChatWidget() {
     }
   }, [isOpen])
 
-  // Check for admin replies, message updates, and typing status every second
+  // Check for admin replies from database every 2 seconds
   React.useEffect(() => {
-    if (!messagesLoaded) return // Wait until initial messages are loaded
+    if (!messagesLoaded || !sessionId) return
     
-    const checkAdminActivity = () => {
-      const sessionId = localStorage.getItem('chatSessionId')
-      if (!sessionId) return
-
-      const chatHistory = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-      const currentSession = chatHistory.find(c => c.id === sessionId)
+    const checkAdminActivity = async () => {
+      // Fetch latest messages from database
+      const latestMessages = await chatService.getMessages(sessionId)
       
-      if (currentSession && currentSession.messages) {
+      if (latestMessages && latestMessages.length > 0) {
         const previousMessages = previousMessagesRef.current
-        const newMessages = currentSession.messages
         
         // Check for new admin messages
-        if (previousMessages.length > 0 && newMessages.length > previousMessages.length) {
-          // Find the new message(s)
-          const newAdminMessages = newMessages.slice(previousMessages.length).filter(
+        if (previousMessages.length > 0 && latestMessages.length > previousMessages.length) {
+          const newAdminMessages = latestMessages.slice(previousMessages.length).filter(
             msg => msg.sender === 'admin'
           )
           
-          // Show notification for each new admin message
           const now = Date.now()
           if (newAdminMessages.length > 0 && (now - lastNotificationTimeRef.current) > 2000) {
             newAdminMessages.forEach(msg => {
@@ -263,110 +243,70 @@ export default function ChatWidget() {
             })
             lastNotificationTimeRef.current = now
             
-            // Increment unread count if chat is closed
             if (!isOpen) {
               setUnreadAdminMessages(prev => prev + newAdminMessages.length)
             }
           }
         }
         
-        // Update previous messages reference
-        previousMessagesRef.current = newMessages
+        previousMessagesRef.current = latestMessages
         
-        // Sync messages (handles new messages, edits, and deletions)
-        const currentMessagesJson = JSON.stringify(messages)
-        const sessionMessagesJson = JSON.stringify(currentSession.messages)
+        // Update messages if changed
+        const currentJson = JSON.stringify(messages)
+        const latestJson = JSON.stringify(latestMessages)
         
-        if (currentMessagesJson !== sessionMessagesJson) {
-          setMessages(currentSession.messages)
+        if (currentJson !== latestJson) {
+          setMessages(latestMessages)
         }
       }
 
-      // Check typing indicator
+      // Check typing indicator (still using localStorage for real-time typing)
       const typingTimestamp = localStorage.getItem('adminTyping_' + sessionId)
       if (typingTimestamp) {
         const timeSinceTyping = Date.now() - parseInt(typingTimestamp)
-        // Show typing if admin typed within last 5 seconds
         setIsAdminTyping(timeSinceTyping < 5000)
       } else {
         setIsAdminTyping(false)
       }
     }
 
-    const interval = setInterval(checkAdminActivity, 1000) // Check every 1 second
+    const interval = setInterval(checkAdminActivity, 2000) // Check every 2 seconds
     checkAdminActivity() // Initial check
     return () => clearInterval(interval)
-  }, [messages, messagesLoaded])
+  }, [messages, messagesLoaded, sessionId, isOpen])
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault()
-    if (!inputText.trim()) return
+    if (!inputText.trim() || !sessionId) return
 
-    // Add user message
-    const newMessage = {
-      id: messages.length + 1,
-      sender: 'user',
-      text: inputText,
-      time: new Date().toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' }),
-      timestamp: new Date().toISOString()
-    }
-    
-    const updatedMessages = [...messages, newMessage]
-    setMessages(updatedMessages)
+    const messageText = inputText
     setInputText('')
-
+    
     // Clear user typing indicator
-    const sessionId = localStorage.getItem('chatSessionId') || `session_${Date.now()}`
     localStorage.removeItem('userTyping_' + sessionId)
 
-    // Save to localStorage for admin
-    const chatHistory = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-    localStorage.setItem('chatSessionId', sessionId)
+    // Send message to database
+    const result = await chatService.sendMessage(sessionId, 'user', messageText)
     
-    const chatSession = {
-      id: sessionId,
-      messages: updatedMessages,
-      lastMessage: inputText,
-      timestamp: new Date().toISOString(),
-      unread: true
-    }
-    
-    const existingIndex = chatHistory.findIndex(c => c.id === sessionId)
-    if (existingIndex >= 0) {
-      chatHistory[existingIndex] = chatSession
-    } else {
-      chatHistory.push(chatSession)
-    }
-    
-    localStorage.setItem('chatMessages', JSON.stringify(chatHistory))
-    console.log('💾 User Message Saved! Session:', sessionId, '| Total Messages:', updatedMessages.length)
-    console.log('📊 All Chat History:', chatHistory)
-    
-    // Show saved indicator
-    showSavedIndicator()
+    if (result.success) {
+      // Update local state immediately
+      const newMessage = result.message
+      const updatedMessages = [...messages, newMessage]
+      setMessages(updatedMessages)
+      
+      // Show saved indicator
+      showSavedIndicator()
 
-    // Auto reply after 2 seconds
-    setTimeout(() => {
-      const autoReply = {
-        id: messages.length + 2,
-        sender: 'bot',
-        text: 'Xabaringiz qabul qilindi! 2 soat ichida javob beraman. Telegram orqali ham murojaat qilishingiz mumkin: @baxadevuz',
-        time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-        timestamp: new Date().toISOString()
-      }
-      setMessages(prev => {
-        const updated = [...prev, autoReply]
-        // Update localStorage with auto-reply
-        const chatHistory = JSON.parse(localStorage.getItem('chatMessages') || '[]')
-        const sessionId = localStorage.getItem('chatSessionId')
-        const existingIndex = chatHistory.findIndex(c => c.id === sessionId)
-        if (existingIndex >= 0) {
-          chatHistory[existingIndex].messages = updated
-          localStorage.setItem('chatMessages', JSON.stringify(chatHistory))
+      // Auto reply after 2 seconds
+      setTimeout(async () => {
+        const autoReplyText = 'Xabaringiz qabul qilindi! 2 soat ichida javob beraman. Telegram orqali ham murojaat qilishingiz mumkin: @baxadevuz'
+        const autoReplyResult = await chatService.sendMessage(sessionId, 'bot', autoReplyText)
+        
+        if (autoReplyResult.success) {
+          setMessages(prev => [...prev, autoReplyResult.message])
         }
-        return updated
-      })
-    }, 2000)
+      }, 2000)
+    }
   }
 
   return (

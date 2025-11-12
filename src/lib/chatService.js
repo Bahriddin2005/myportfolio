@@ -22,12 +22,15 @@ export const sendMessage = async (sessionId, sender, text) => {
         body: JSON.stringify({ sessionId, sender, text })
       })
       
-      if (!response.ok) throw new Error('Failed to send message')
-      
       const data = await response.json()
+      
+      // Check if API wants us to use localStorage fallback
+      if (data.useLocalStorage || !data.success) {
+        return sendMessageLocalStorage(sessionId, sender, text)
+      }
+      
       return { success: true, message: data.message }
     } catch (error) {
-      console.error('Supabase send error:', error)
       // Fallback to localStorage
       return sendMessageLocalStorage(sessionId, sender, text)
     }
@@ -44,12 +47,21 @@ export const getMessages = async (sessionId) => {
     try {
       const response = await fetch(`/api/chat/messages?sessionId=${sessionId}`)
       
-      if (!response.ok) throw new Error('Failed to get messages')
-      
       const data = await response.json()
-      return data.messages || []
+      
+      // If API returns empty or wants localStorage, check localStorage
+      if (data.messages && data.messages.length > 0) {
+        return data.messages
+      }
+      
+      // Fallback to localStorage
+      const localMessages = getMessagesLocalStorage(sessionId)
+      if (localMessages && localMessages.length > 0) {
+        return localMessages
+      }
+      
+      return []
     } catch (error) {
-      console.error('Supabase get error:', error)
       // Fallback to localStorage
       return getMessagesLocalStorage(sessionId)
     }
@@ -66,12 +78,21 @@ export const getAllSessions = async () => {
     try {
       const response = await fetch('/api/chat/sessions')
       
-      if (!response.ok) throw new Error('Failed to get sessions')
-      
       const data = await response.json()
-      return data.sessions || []
+      
+      // If API returns empty or wants localStorage, check localStorage
+      if (data.sessions && data.sessions.length > 0) {
+        return data.sessions
+      }
+      
+      // Fallback to localStorage
+      const localSessions = getSessionsLocalStorage()
+      if (localSessions && localSessions.length > 0) {
+        return localSessions
+      }
+      
+      return []
     } catch (error) {
-      console.error('Supabase sessions error:', error)
       // Fallback to localStorage
       return getSessionsLocalStorage()
     }
@@ -138,7 +159,6 @@ export const updateMessage = async (sessionId, messageId, newText) => {
       if (!response.ok) throw new Error('Failed to update message')
       return { success: true }
     } catch (error) {
-      console.error('Update error:', error)
       return updateMessageLocalStorage(sessionId, messageId, newText)
     }
   } else {
@@ -176,7 +196,6 @@ export const deleteMessage = async (sessionId, messageId) => {
       if (!response.ok) throw new Error('Failed to delete message')
       return { success: true }
     } catch (error) {
-      console.error('Delete error:', error)
       return deleteMessageLocalStorage(sessionId, messageId)
     }
   } else {
