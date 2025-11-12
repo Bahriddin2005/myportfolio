@@ -339,6 +339,8 @@ export default function ChatWidget() {
     }
     
     localStorage.setItem('chatMessages', JSON.stringify(chatHistory))
+    console.log('💾 User Message Saved! Session:', sessionId, '| Total Messages:', updatedMessages.length)
+    console.log('📊 All Chat History:', chatHistory)
     
     // Show saved indicator
     showSavedIndicator()

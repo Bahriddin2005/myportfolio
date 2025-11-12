@@ -76,7 +76,14 @@ export default function Administration() {
     // Load chat messages
     const loadChatMessages = () => {
       const chats = localStorage.getItem('chatMessages')
-      if (chats) setChatMessages(JSON.parse(chats))
+      console.log('🔍 Admin Loading Chats:', chats ? JSON.parse(chats).length : 0, 'chats found')
+      if (chats) {
+        const parsed = JSON.parse(chats)
+        console.log('📨 Chat Details:', parsed)
+        setChatMessages(parsed)
+      } else {
+        console.log('⚠️ No chatMessages found in localStorage')
+      }
     }
     loadChatMessages()
     
