@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 export default function Contact() {
+  const router = useRouter()
   const [showVideoCall, setShowVideoCall] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -11,6 +13,19 @@ export default function Contact() {
   })
   const [formSubmitted, setFormSubmitted] = useState(false)
   const [roomName, setRoomName] = useState('')
+  const [isAdminJoining, setIsAdminJoining] = useState(false)
+
+  // Check if admin is joining from URL
+  useEffect(() => {
+    if (router.query.join) {
+      const joinRoomName = router.query.join
+      setRoomName(joinRoomName)
+      setFormSubmitted(true)
+      setShowVideoCall(true)
+      setIsAdminJoining(true)
+      setFormData({ name: 'Bahriddin (Admin)', email: 'admin@bahriddin.dev', phone: '', message: '' })
+    }
+  }, [router.query.join])
 
   // Load Jitsi Meet script
   useEffect(() => {
@@ -251,34 +266,55 @@ export default function Contact() {
             /* Video Call Interface */
             <div className="animate-slide-up">
               <div className="text-center mb-8">
-                <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-xl animate-bounce">
-                  ✅
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-black mb-4 text-gray-900">
-                  Ariza Qabul Qilindi!
-                </h2>
-                <p className="text-lg text-gray-600 font-semibold mb-2">
-                  Video xona tayyor! Men qo'shilguncha kutib turing 👇
-                </p>
-                <p className="text-sm text-green-600 font-black bg-green-50 inline-block px-4 py-2 rounded-full mb-4">
-                  ✨ 100% o'z saytimizda - boshqa joyga o'tmaysiz!
-                </p>
-                
-                {/* Waiting instructions */}
-                <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 max-w-2xl mx-auto mb-6">
-                  <h3 className="text-xl font-black text-blue-900 mb-3 flex items-center justify-center gap-2">
-                    <span className="text-2xl">🎥</span>
-                    Qanday Ishlaydi?
-                  </h3>
-                  <div className="text-left space-y-2 text-sm text-blue-800 font-semibold">
-                    <p>✅ <strong>Siz:</strong> Video xonada kutasiz (pastda)</p>
-                    <p>✅ <strong>Men:</strong> Arizangizni ko'rib, shu xonaga qo'shilaman</p>
-                    <p>✅ <strong>Natija:</strong> To'g'ridan-to'g'ri video orqali gaplashamiz!</p>
-                    <p className="text-xs mt-3 text-blue-600">
-                      💡 Xonaning linkini saqlang - keyin ham kirishingiz mumkin: <strong>Room: {roomName}</strong>
+                {isAdminJoining ? (
+                  /* Admin Joining */
+                  <>
+                    <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-blue-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-xl animate-pulse">
+                      👨‍💼
+                    </div>
+                    <h2 className="text-3xl sm:text-4xl font-black mb-4 text-gray-900">
+                      Admin Mode 🔐
+                    </h2>
+                    <p className="text-lg text-purple-600 font-semibold mb-2">
+                      Foydalanuvchi bilan gaplashish uchun tayyor!
                     </p>
-                  </div>
-                </div>
+                    <p className="text-sm text-gray-600 font-bold bg-purple-50 inline-block px-4 py-2 rounded-full mb-4">
+                      Room: <code className="font-mono text-xs">{roomName}</code>
+                    </p>
+                  </>
+                ) : (
+                  /* User Joining */
+                  <>
+                    <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-xl animate-bounce">
+                      ✅
+                    </div>
+                    <h2 className="text-3xl sm:text-4xl font-black mb-4 text-gray-900">
+                      Ariza Qabul Qilindi!
+                    </h2>
+                    <p className="text-lg text-gray-600 font-semibold mb-2">
+                      Video xona tayyor! Men qo'shilguncha kutib turing 👇
+                    </p>
+                    <p className="text-sm text-green-600 font-black bg-green-50 inline-block px-4 py-2 rounded-full mb-4">
+                      ✨ 100% o'z saytimizda - boshqa joyga o'tmaysiz!
+                    </p>
+                    
+                    {/* Waiting instructions */}
+                    <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 max-w-2xl mx-auto mb-6">
+                      <h3 className="text-xl font-black text-blue-900 mb-3 flex items-center justify-center gap-2">
+                        <span className="text-2xl">🎥</span>
+                        Qanday Ishlaydi?
+                      </h3>
+                      <div className="text-left space-y-2 text-sm text-blue-800 font-semibold">
+                        <p>✅ <strong>Siz:</strong> Video xonada kutasiz (pastda)</p>
+                        <p>✅ <strong>Men:</strong> Arizangizni ko'rib, shu xonaga qo'shilaman</p>
+                        <p>✅ <strong>Natija:</strong> To'g'ridan-to'g'ri video orqali gaplashamiz!</p>
+                        <p className="text-xs mt-3 text-blue-600">
+                          💡 Xonaning linkini saqlang - keyin ham kirishingiz mumkin: <strong>Room: {roomName}</strong>
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Jitsi Video Container */}

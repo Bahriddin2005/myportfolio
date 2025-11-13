@@ -7,13 +7,14 @@ export default function Administration() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState('')
-  const [activeTab, setActiveTab] = useState('messages')
+  const [activeTab, setActiveTab] = useState('submissions')
   const [chatMessages, setChatMessages] = useState([])
   const [selectedChat, setSelectedChat] = useState(null)
   const [adminReply, setAdminReply] = useState('')
   const [userTypingStatus, setUserTypingStatus] = useState({})
   const [editingMessageId, setEditingMessageId] = useState(null)
   const [editedText, setEditedText] = useState('')
+  const [contactSubmissions, setContactSubmissions] = useState([])
   
   // Portfolio Data State
   const [profileData, setProfileData] = useState({
@@ -73,6 +74,10 @@ export default function Administration() {
     
     const savedProjects = localStorage.getItem('portfolioProjects')
     if (savedProjects) setProjects(JSON.parse(savedProjects))
+    
+    // Load contact submissions
+    const savedSubmissions = localStorage.getItem('contactSubmissions')
+    if (savedSubmissions) setContactSubmissions(JSON.parse(savedSubmissions))
     
     // Load chat messages from database
     const loadChatMessages = async () => {
@@ -388,6 +393,7 @@ export default function Administration() {
           {/* Tabs */}
           <div className="flex gap-3 mb-8 overflow-x-auto pb-2">
             {[
+              { id: 'submissions', label: 'Video Requests', icon: '🎥' },
               { id: 'messages', label: 'Messages', icon: '💬' },
               { id: 'profile', label: 'Profile Info', icon: '👤' },
               { id: 'stats', label: 'Statistics', icon: '📊' },
@@ -409,6 +415,131 @@ export default function Administration() {
               </button>
             ))}
           </div>
+
+          {/* Video Submissions Tab */}
+          {activeTab === 'submissions' && (
+            <div className="space-y-6">
+              <div className="bg-gray-800 rounded-2xl p-6 border-2 border-gray-700">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
+                      <span className="text-4xl">🎥</span>
+                      Video Call Requests
+                    </h2>
+                    <p className="text-gray-400 text-sm font-semibold mt-2">
+                      {contactSubmissions.length} ta ariza • Xonalarga qo'shiling va gaplashing
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (confirm('Barcha arizalarni o\'chirmoqchimisiz?')) {
+                        localStorage.removeItem('contactSubmissions')
+                        setContactSubmissions([])
+                      }
+                    }}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-bold text-sm transition-all"
+                  >
+                    🗑️ Barchasini O&apos;chirish
+                  </button>
+                </div>
+
+                {contactSubmissions.length === 0 ? (
+                  <div className="text-center py-16">
+                    <div className="w-24 h-24 bg-gray-700 rounded-3xl flex items-center justify-center text-5xl mx-auto mb-6">
+                      📭
+                    </div>
+                    <h3 className="text-2xl font-black text-gray-400 mb-2">Arizalar Yo&apos;q</h3>
+                    <p className="text-gray-500 font-semibold">
+                      Foydalanuvchilar ariza yuborganlarida bu yerda ko&apos;rinadi
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {contactSubmissions.reverse().map((submission, index) => (
+                      <div
+                        key={submission.id}
+                        className="bg-gray-900 rounded-2xl p-6 border-2 border-gray-700 hover:border-blue-600 transition-all"
+                      >
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-start gap-4">
+                            <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-2xl shadow-xl">
+                              👤
+                            </div>
+                            <div>
+                              <h3 className="text-xl font-black text-white mb-1">{submission.name}</h3>
+                              <p className="text-sm text-gray-400 font-semibold">{submission.email}</p>
+                              {submission.phone && (
+                                <p className="text-sm text-gray-400 font-semibold">📞 {submission.phone}</p>
+                              )}
+                              <p className="text-xs text-gray-500 font-semibold mt-1">
+                                🕐 {new Date(submission.timestamp).toLocaleString('uz-UZ')}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <button
+                            onClick={() => {
+                              if (confirm('Bu arizani o\'chirmoqchimisiz?')) {
+                                const updated = contactSubmissions.filter(s => s.id !== submission.id)
+                                setContactSubmissions(updated)
+                                localStorage.setItem('contactSubmissions', JSON.stringify(updated))
+                              }
+                            }}
+                            className="px-3 py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white rounded-lg font-bold text-sm transition-all"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+
+                        {/* Message */}
+                        <div className="bg-gray-800 rounded-xl p-4 mb-4 border-2 border-gray-700">
+                          <p className="text-sm text-gray-300 font-semibold leading-relaxed">
+                            {submission.message || 'Xabar yo\'q'}
+                          </p>
+                        </div>
+
+                        {/* Video Room Info */}
+                        <div className="bg-gradient-to-br from-red-500/10 to-orange-500/10 border-2 border-red-500/30 rounded-xl p-4 mb-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-red-400 font-black text-sm uppercase tracking-wider">🎥 Video Xona:</span>
+                          </div>
+                          <code className="text-xs text-red-300 font-mono bg-gray-900 px-3 py-1 rounded-lg block">
+                            {submission.roomName}
+                          </code>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex gap-3">
+                          <a
+                            href={`/contact?join=${submission.roomName}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-black text-center transition-all hover:scale-105 shadow-xl hover:shadow-green-500/50 flex items-center justify-center gap-2"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            VIDEO XONAGA KIRISH
+                          </a>
+                          
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(submission.roomName)
+                              alert('Room name nusxalandi!')
+                            }}
+                            className="px-6 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all"
+                            title="Room name'ni copy qilish"
+                          >
+                            📋
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Messages Tab */}
           {activeTab === 'messages' && (
