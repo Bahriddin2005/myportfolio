@@ -311,8 +311,8 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Chat Button - Premium Floating */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* Chat Button - Premium Floating - Mobile Responsive */}
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
         {!isOpen && (
           <div className="relative group">
             {/* Animated glow rings */}
@@ -321,19 +321,19 @@ export default function ChatWidget() {
             
             <button
               onClick={() => setIsOpen(true)}
-              className="relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-2xl shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 p-5 hover:scale-110 group"
+              className="relative bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-2xl shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 p-3 sm:p-5 hover:scale-110 group"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="relative">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
-                    <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
+                    <svg className="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                   </div>
                   {/* Online dot */}
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
                 </div>
-                <div className="text-left">
+                <div className="text-left hidden sm:block">
                   <div className="text-white text-sm font-black uppercase tracking-wide">Chat Boshlash</div>
                   <div className="text-blue-100 text-xs font-semibold">Onlinedamiz!</div>
                 </div>
@@ -354,11 +354,11 @@ export default function ChatWidget() {
           </div>
         )}
 
-        {/* Chat Window - Dark Premium Design */}
+        {/* Chat Window - Dark Premium Design - Mobile Responsive */}
         {isOpen && (
-          <div className="w-[420px] h-[650px] bg-gray-900 rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-scale-in border-2 border-gray-800">
-            {/* Premium Header with Gradient */}
-            <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 px-6 py-5 overflow-hidden">
+          <div className="fixed inset-4 sm:relative sm:inset-auto sm:w-[420px] sm:h-[650px] w-auto h-auto bg-gray-900 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-scale-in border-2 border-gray-800">
+            {/* Premium Header with Gradient - Mobile Responsive */}
+            <div className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 px-4 py-4 sm:px-6 sm:py-5 overflow-hidden">
               {/* Animated background */}
               <div className="absolute inset-0 opacity-20">
                 <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full blur-3xl animate-pulse"></div>
@@ -366,41 +366,42 @@ export default function ChatWidget() {
               </div>
 
               <div className="relative z-10">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <div className="relative">
-                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-2xl shadow-lg">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-xl sm:rounded-2xl flex items-center justify-center text-xl sm:text-2xl shadow-lg">
                         👨‍💻
                       </div>
                       {/* Online indicator */}
                       <div className="absolute -bottom-1 -right-1">
                         <div className="relative">
                           <div className="absolute inset-0 bg-green-400 rounded-full animate-ping"></div>
-                          <div className="relative w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
+                          <div className="relative w-3 h-3 sm:w-4 sm:h-4 bg-green-400 rounded-full border-2 border-white"></div>
                         </div>
                       </div>
                     </div>
                     <div>
-                      <div className="text-white font-black text-lg tracking-tight">Bahriddin</div>
-                      <div className="text-blue-100 text-sm font-semibold flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        Online • Tez javob beradi
+                      <div className="text-white font-black text-base sm:text-lg tracking-tight">Bahriddin</div>
+                      <div className="text-blue-100 text-xs sm:text-sm font-semibold flex items-center gap-1 sm:gap-2">
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span className="hidden sm:inline">Online • Tez javob beradi</span>
+                        <span className="sm:hidden">Online</span>
                       </div>
-                      <div className="text-blue-200/80 text-xs font-bold flex items-center gap-2 mt-1">
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <div className="text-blue-200/80 text-[10px] sm:text-xs font-bold flex items-center gap-1 sm:gap-2 mt-0.5 sm:mt-1">
+                        <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
                           <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
                         </svg>
-                        {messages.length} xabar • Saqlanmoqda
+                        {messages.length} xabar <span className="hidden sm:inline">• Saqlanmoqda</span>
                       </div>
                     </div>
                   </div>
                   
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="text-white hover:bg-white/20 rounded-xl p-2 transition-all hover:rotate-90 duration-300"
+                    className="text-white hover:bg-white/20 rounded-lg sm:rounded-xl p-1.5 sm:p-2 transition-all hover:rotate-90 duration-300"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -408,16 +409,16 @@ export default function ChatWidget() {
               </div>
             </div>
 
-            {/* Messages - Dark bubbles */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950">
+            {/* Messages - Dark bubbles - Mobile Responsive */}
+            <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-6 bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950">
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex gap-3 ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-slide-up`}
+                  className={`flex gap-2 sm:gap-3 ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-slide-up`}
                 >
                   {/* Bot/Admin avatar */}
                   {(message.sender === 'bot' || message.sender === 'admin') && (
-                    <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center text-lg shadow-lg ${
+                    <div className={`flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg shadow-lg ${
                       message.sender === 'admin'
                         ? 'bg-gradient-to-br from-green-600 to-cyan-600'
                         : 'bg-gradient-to-br from-blue-600 to-purple-600'
@@ -426,9 +427,9 @@ export default function ChatWidget() {
                     </div>
                   )}
 
-                  <div className={`max-w-[75%] ${message.sender === 'user' ? 'order-2' : ''} group`}>
+                  <div className={`max-w-[85%] sm:max-w-[75%] ${message.sender === 'user' ? 'order-2' : ''} group`}>
                     <div
-                      className={`px-5 py-4 shadow-xl relative ${
+                      className={`px-3 py-2.5 sm:px-5 sm:py-4 shadow-xl relative text-sm sm:text-base ${
                         message.sender === 'user'
                           ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-3xl rounded-br-md shadow-blue-500/50 border border-blue-500/50'
                           : message.sender === 'admin'
@@ -578,21 +579,21 @@ export default function ChatWidget() {
                 </div>
               ))}
 
-              {/* Admin Typing Indicator */}
+              {/* Admin Typing Indicator - Mobile Responsive */}
               {isAdminTyping && (
-                <div className="flex gap-3 animate-slide-up">
-                  <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-green-600 to-cyan-600 rounded-2xl flex items-center justify-center text-lg shadow-lg">
+                <div className="flex gap-2 sm:gap-3 animate-slide-up">
+                  <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-600 to-cyan-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-base sm:text-lg shadow-lg">
                     👨‍💼
                   </div>
-                  <div className="max-w-[75%]">
-                    <div className="px-5 py-4 bg-gray-800 rounded-3xl rounded-bl-md border-2 border-green-600 shadow-xl">
+                  <div className="max-w-[85%] sm:max-w-[75%]">
+                    <div className="px-3 py-2.5 sm:px-5 sm:py-4 bg-gray-800 rounded-2xl sm:rounded-3xl rounded-bl-md border-2 border-green-600 shadow-xl">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-bold text-green-400 uppercase">Bahriddin yozmoqda...</span>
+                        <span className="text-[10px] sm:text-xs font-bold text-green-400 uppercase">Bahriddin yozmoqda...</span>
                       </div>
                       <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-bounce"></div>
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                       </div>
                     </div>
                   </div>
@@ -602,31 +603,31 @@ export default function ChatWidget() {
               {/* Scroll anchor */}
               <div ref={messagesEndRef} />
 
-              {/* Quick suggestions - Dark */}
+              {/* Quick suggestions - Dark - Mobile Responsive */}
               {messages.length === 1 && (
-                <div className="mt-6 bg-gray-800 backdrop-blur-sm rounded-2xl p-5 border-2 border-gray-700 shadow-2xl">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-xl shadow-lg">
+                <div className="mt-4 sm:mt-6 bg-gray-800 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-5 border-2 border-gray-700 shadow-2xl">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg sm:rounded-xl flex items-center justify-center text-lg sm:text-xl shadow-lg">
                       💡
                     </div>
-                    <div className="font-black text-white text-base uppercase tracking-wide">Tez Savollar</div>
+                    <div className="font-black text-white text-sm sm:text-base uppercase tracking-wide">Tez Savollar</div>
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     <button
                       onClick={() => setInputText('Loyiha narxi qancha?')}
-                      className="w-full text-left px-4 py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl text-sm font-black text-white transition-all hover:scale-105 shadow-lg hover:shadow-xl uppercase tracking-wide"
+                      className="w-full text-left px-3 py-2.5 sm:px-4 sm:py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg sm:rounded-xl text-xs sm:text-sm font-black text-white transition-all hover:scale-105 shadow-lg hover:shadow-xl uppercase tracking-wide"
                     >
                       💰 Narx Ma'lumoti
                     </button>
                     <button
                       onClick={() => setInputText('MVP yaratish uchun qancha vaqt kerak?')}
-                      className="w-full text-left px-4 py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-sm font-black text-white transition-all hover:scale-105 shadow-lg hover:shadow-xl uppercase tracking-wide"
+                      className="w-full text-left px-3 py-2.5 sm:px-4 sm:py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg sm:rounded-xl text-xs sm:text-sm font-black text-white transition-all hover:scale-105 shadow-lg hover:shadow-xl uppercase tracking-wide"
                     >
                       ⏱️ MVP Vaqti
                     </button>
                     <button
                       onClick={() => setInputText('Portfolio ishlaringizni ko\'rmoqchiman')}
-                      className="w-full text-left px-4 py-3.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 rounded-xl text-sm font-black text-white transition-all hover:scale-105 shadow-lg hover:shadow-xl uppercase tracking-wide"
+                      className="w-full text-left px-3 py-2.5 sm:px-4 sm:py-3.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 rounded-lg sm:rounded-xl text-xs sm:text-sm font-black text-white transition-all hover:scale-105 shadow-lg hover:shadow-xl uppercase tracking-wide"
                     >
                       🎨 Portfolio
                     </button>
@@ -635,36 +636,36 @@ export default function ChatWidget() {
               )}
             </div>
 
-            {/* Quick Actions - Dark chips */}
-            <div className="px-6 py-4 bg-gray-900 border-t-2 border-gray-800">
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {/* Quick Actions - Dark chips - Mobile Responsive */}
+            <div className="px-3 py-3 sm:px-6 sm:py-4 bg-gray-900 border-t-2 border-gray-800">
+              <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 scrollbar-hide">
                 <button
                   onClick={() => setInputText('Web sayt yaratish bo\'yicha gaplashmoqchiman')}
-                  className="group px-5 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl text-xs font-black whitespace-nowrap transition-all hover:scale-110 hover:shadow-xl shadow-blue-500/50 flex items-center gap-2 uppercase tracking-wider"
+                  className="group px-3 py-2 sm:px-5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black whitespace-nowrap transition-all hover:scale-110 hover:shadow-xl shadow-blue-500/50 flex items-center gap-1 sm:gap-2 uppercase tracking-wider"
                 >
-                  <span className="text-xl">💻</span>
+                  <span className="text-base sm:text-xl">💻</span>
                   Web Sayt
                 </button>
                 <button
                   onClick={() => setInputText('MVP yaratish uchun yordam kerak')}
-                  className="group px-5 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl text-xs font-black whitespace-nowrap transition-all hover:scale-110 hover:shadow-xl shadow-purple-500/50 flex items-center gap-2 uppercase tracking-wider"
+                  className="group px-3 py-2 sm:px-5 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black whitespace-nowrap transition-all hover:scale-110 hover:shadow-xl shadow-purple-500/50 flex items-center gap-1 sm:gap-2 uppercase tracking-wider"
                 >
-                  <span className="text-xl">🚀</span>
+                  <span className="text-base sm:text-xl">🚀</span>
                   MVP
                 </button>
                 <button
                   onClick={() => setInputText('Narx haqida ma\'lumot bera olasizmi?')}
-                  className="group px-5 py-3 bg-gradient-to-r from-green-600 to-cyan-600 hover:from-green-700 hover:to-cyan-700 text-white rounded-xl text-xs font-black whitespace-nowrap transition-all hover:scale-110 hover:shadow-xl shadow-green-500/50 flex items-center gap-2 uppercase tracking-wider"
+                  className="group px-3 py-2 sm:px-5 sm:py-3 bg-gradient-to-r from-green-600 to-cyan-600 hover:from-green-700 hover:to-cyan-700 text-white rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black whitespace-nowrap transition-all hover:scale-110 hover:shadow-xl shadow-green-500/50 flex items-center gap-1 sm:gap-2 uppercase tracking-wider"
                 >
-                  <span className="text-xl">💰</span>
+                  <span className="text-base sm:text-xl">💰</span>
                   Narx
                 </button>
               </div>
             </div>
 
-            {/* Input - Dark Premium */}
-            <form onSubmit={handleSendMessage} className="p-6 bg-gray-900 border-t-2 border-gray-800">
-              <div className="flex gap-3 items-end">
+            {/* Input - Dark Premium - Mobile Responsive */}
+            <form onSubmit={handleSendMessage} className="p-3 sm:p-6 bg-gray-900 border-t-2 border-gray-800">
+              <div className="flex gap-2 sm:gap-3 items-end">
                 {/* Input field */}
                 <div className="flex-1 relative">
                 <input
@@ -672,44 +673,44 @@ export default function ChatWidget() {
                   value={inputText}
                   onChange={(e) => handleUserTyping(e.target.value)}
                   placeholder="Xabaringizni yozing..."
-                  className="w-full px-5 py-4 bg-gray-800 border-2 border-gray-700 text-white rounded-2xl focus:bg-gray-850 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all font-bold placeholder:text-gray-500 placeholder:font-semibold"
+                  className="w-full px-3 py-2.5 sm:px-5 sm:py-4 bg-gray-800 border-2 border-gray-700 text-white text-sm sm:text-base rounded-xl sm:rounded-2xl focus:bg-gray-850 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all font-bold placeholder:text-gray-500 placeholder:font-semibold"
                 />
                 </div>
 
-                {/* Send button */}
+                {/* Send button - Mobile Responsive */}
                 <button
                   type="submit"
                   disabled={!inputText.trim()}
-                  className={`flex-shrink-0 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 hover:shadow-2xl hover:shadow-blue-500/50 hover:scale-110 transition-all flex items-center justify-center gap-2 font-black uppercase text-xs tracking-wider ${
+                  className={`flex-shrink-0 px-4 py-2.5 sm:px-6 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 hover:shadow-2xl hover:shadow-blue-500/50 hover:scale-110 transition-all flex items-center justify-center gap-1 sm:gap-2 font-black uppercase text-[10px] sm:text-xs tracking-wider ${
                     !inputText.trim() ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
-                  Yuborish
+                  <span className="hidden sm:inline">Yuborish</span>
                 </button>
               </div>
               
-              {/* Alternative contact - Dark */}
-              <div className="mt-4 flex items-center justify-center gap-3">
+              {/* Alternative contact - Dark - Mobile Responsive */}
+              <div className="mt-3 sm:mt-4 flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm">
                 <a
                   href="https://t.me/baxadevuz"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-xl text-xs font-black text-white transition-all hover:scale-105 shadow-lg uppercase tracking-wider"
+                  className="group flex items-center gap-1 sm:gap-2 px-3 py-2 sm:px-4 sm:py-2.5 bg-blue-600 hover:bg-blue-700 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black text-white transition-all hover:scale-105 shadow-lg uppercase tracking-wider"
                 >
-                  <svg className="w-4 h-4 group-hover:rotate-12 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 group-hover:rotate-12 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
                   </svg>
                   Telegram
                 </a>
-                <span className="text-gray-600 font-black">yoki</span>
+                <span className="text-gray-600 font-black text-[10px] sm:text-xs">yoki</span>
                 <a
                   href="mailto:hello@bahriddin.dev"
-                  className="group flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 rounded-xl text-xs font-black text-white transition-all hover:scale-105 shadow-lg uppercase tracking-wider"
+                  className="group flex items-center gap-1 sm:gap-2 px-3 py-2 sm:px-4 sm:py-2.5 bg-purple-600 hover:bg-purple-700 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-black text-white transition-all hover:scale-105 shadow-lg uppercase tracking-wider"
                 >
-                  <svg className="w-4 h-4 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                   Email
