@@ -1,0 +1,70 @@
+# NGINX CONFIGURATION - Portfolio
+# File: /etc/nginx/sites-available/portfolio
+
+server {
+    listen 80;
+    server_name bahriddin.dev www.bahriddin.dev;  # ← O'zgartiring (o'z domeningiz)
+
+    # Logs
+    access_log /var/log/nginx/portfolio_access.log;
+    error_log /var/log/nginx/portfolio_error.log;
+
+    location / {
+        # Proxy to Next.js (port 3001)
+        proxy_pass http://localhost:3001;
+        proxy_http_version 1.1;
+        
+        # WebSocket support (for hot reload)
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        
+        # Headers
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Cache
+        proxy_cache_bypass $http_upgrade;
+        
+        # Timeouts
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+
+    # Static files
+    location /_next/static {
+        proxy_pass http://localhost:3001;
+        proxy_cache_valid 60m;
+        add_header Cache-Control "public, max-age=3600, immutable";
+    }
+
+    # Images
+    location ~* \.(jpg|jpeg|png|gif|ico|webp|svg)$ {
+        proxy_pass http://localhost:3001;
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+
+    # Security headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+}
+
+# ============================================
+# MY_TEST CONFIG (existing - don't touch!)
+# File: /etc/nginx/sites-available/my_test
+# ============================================
+
+# server {
+#     listen 80;
+#     server_name my-test.example.com;  # ← my_test domain
+#
+#     location / {
+#         proxy_pass http://localhost:3000;  # ← my_test port
+#         # ... (existing config)
+#     }
+# }
+

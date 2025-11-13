@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Bahriddin — Full-Stack Developer & Product Designer</title>
+        <title>Bahriddin Shavkatov — Full-Stack Developer & Software engeneer</title>
         <meta name="description" content="Bahriddin — Professional Full-Stack Developer. Portfolio: web platformalar, ta'lim loyihalari, case-study'lar. Hire me for your next project." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -46,7 +46,7 @@ export default function Home() {
                 
                 <h1 className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter text-white">
                   <span className="font-mono text-green-400 text-5xl md:text-7xl">&lt;</span>
-                  <span className="font-mono">Bahriddin</span>
+                  <span className="font-mono">Bahriddin Shavkatov</span>
                   <span className="font-mono text-green-400 text-5xl md:text-7xl">/&gt;</span>
                   <br />
                   <span className="text-gray-300 text-3xl md:text-5xl font-black tracking-tight mt-4 block">
@@ -170,7 +170,7 @@ export default function Home() {
                     </div>
                     
                     <h3 className="text-3xl font-black mb-4 tracking-tight">
-                      Buxoro Bilimdonlar
+                      Buxoro Bilimdonlar maktabi
                     </h3>
                     
                     <p className="text-blue-50 mb-4 text-lg leading-relaxed">
