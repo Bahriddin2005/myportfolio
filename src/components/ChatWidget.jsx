@@ -15,6 +15,88 @@ export default function ChatWidget() {
   const [unreadAdminMessages, setUnreadAdminMessages] = useState(0)
   const lastReadMessageIdRef = React.useRef(null)
   const [sessionId, setSessionId] = useState(null)
+  const [showVideoCall, setShowVideoCall] = useState(false)
+  const [videoRoomName, setVideoRoomName] = useState('')
+  const jitsiApiRef = React.useRef(null)
+
+  // Load Jitsi script when video call is started
+  React.useEffect(() => {
+    if (showVideoCall && videoRoomName && typeof window !== 'undefined') {
+      const script = document.createElement('script')
+      script.src = 'https://meet.jit.si/external_api.js'
+      script.async = true
+      
+      script.onload = () => {
+        initializeJitsi()
+      }
+      
+      document.body.appendChild(script)
+      
+      return () => {
+        if (jitsiApiRef.current) {
+          jitsiApiRef.current.dispose()
+        }
+        if (document.body.contains(script)) {
+          document.body.removeChild(script)
+        }
+      }
+    }
+  }, [showVideoCall, videoRoomName])
+
+  const initializeJitsi = () => {
+    if (typeof window !== 'undefined' && window.JitsiMeetExternalAPI && videoRoomName) {
+      const domain = 'meet.jit.si'
+      const options = {
+        roomName: videoRoomName,
+        width: '100%',
+        height: 600,
+        parentNode: document.querySelector('#chat-jitsi-container'),
+        configOverwrite: {
+          startWithAudioMuted: false,
+          startWithVideoMuted: false,
+          enableWelcomePage: false,
+          prejoinPageEnabled: false
+        },
+        interfaceConfigOverwrite: {
+          SHOW_JITSI_WATERMARK: false,
+          DEFAULT_BACKGROUND: '#1f2937',
+          TOOLBAR_BUTTONS: [
+            'microphone', 'camera', 'desktop', 'fullscreen',
+            'hangup', 'chat', 'settings'
+          ]
+        },
+        userInfo: {
+          displayName: 'User'
+        }
+      }
+      
+      jitsiApiRef.current = new window.JitsiMeetExternalAPI(domain, options)
+    }
+  }
+
+  const startVideoCall = () => {
+    const room = `chat-${sessionId || Date.now()}`
+    setVideoRoomName(room)
+    setShowVideoCall(true)
+    
+    // Send message to admin about video call
+    if (sessionId) {
+      chatService.sendMessage(sessionId, 'user', `🎥 Video qo'ng'iroq boshlandi! Room: ${room}`)
+      setTimeout(async () => {
+        const latestMessages = await chatService.getMessages(sessionId)
+        setMessages(latestMessages)
+      }, 500)
+    }
+  }
+
+  const endVideoCall = () => {
+    if (jitsiApiRef.current) {
+      jitsiApiRef.current.dispose()
+      jitsiApiRef.current = null
+    }
+    setShowVideoCall(false)
+    setVideoRoomName('')
+  }
 
   const handleUserTyping = (text) => {
     setInputText(text)
@@ -397,21 +479,92 @@ export default function ChatWidget() {
                     </div>
                   </div>
                   
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="text-white hover:bg-white/20 rounded-lg sm:rounded-xl p-1.5 sm:p-2 transition-all hover:rotate-90 duration-300"
-                  >
-                    <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {/* Video Call Button */}
+                    {!showVideoCall && (
+                      <button
+                        onClick={startVideoCall}
+                        className="group relative text-white hover:bg-white/20 rounded-lg sm:rounded-xl p-1.5 sm:p-2 transition-all duration-300"
+                        title="Video qo'ng'iroq boshlash"
+                      >
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        {/* Pulse dot */}
+                        <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                      </button>
+                    )}
+                    
+                    {/* Close Button */}
+                    <button
+                      onClick={() => {
+                        setIsOpen(false)
+                        endVideoCall()
+                      }}
+                      className="text-white hover:bg-white/20 rounded-lg sm:rounded-xl p-1.5 sm:p-2 transition-all hover:rotate-90 duration-300"
+                    >
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Messages - Dark bubbles - Mobile Responsive */}
-            <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-6 bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950">
-              {messages.map((message) => (
+            {/* Video Call or Messages */}
+            {showVideoCall ? (
+              /* Video Call Interface */
+              <div className="flex-1 overflow-hidden bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950 p-3 sm:p-6">
+                <div className="h-full flex flex-col">
+                  {/* Video Call Header */}
+                  <div className="text-center mb-4">
+                    <div className="inline-block px-4 py-2 bg-red-500/20 border border-red-500/50 rounded-full mb-3">
+                      <span className="text-red-400 font-black text-sm flex items-center gap-2">
+                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                        Video Qo&apos;ng&apos;iroq Faol
+                      </span>
+                    </div>
+                    <p className="text-gray-400 text-xs font-semibold">
+                      Room: <code className="text-green-400 font-mono">{videoRoomName}</code>
+                    </p>
+                  </div>
+
+                  {/* Jitsi Container */}
+                  <div 
+                    id="chat-jitsi-container"
+                    className="flex-1 bg-gray-900 rounded-2xl overflow-hidden border-2 border-gray-700 shadow-2xl"
+                    style={{minHeight: '400px'}}
+                  ></div>
+
+                  {/* End Call Button */}
+                  <div className="mt-4 flex gap-3">
+                    <button
+                      onClick={endVideoCall}
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl font-black text-sm transition-all hover:scale-105 shadow-xl hover:shadow-red-500/50 flex items-center justify-center gap-2"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      Qo&apos;ng&apos;iroqni Tugatish
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(videoRoomName)
+                        alert('Room link nusxalandi!')
+                      }}
+                      className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all"
+                      title="Room linkini nusxalash"
+                    >
+                      📋
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Messages - Dark bubbles - Mobile Responsive */
+              <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-6 bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950">
+                {messages.map((message) => (
                 <div
                   key={message.id}
                   className={`flex gap-2 sm:gap-3 ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-slide-up`}
@@ -634,10 +787,12 @@ export default function ChatWidget() {
                   </div>
                 </div>
               )}
-            </div>
+              </div>
+            )}
 
             {/* Quick Actions - Dark chips - Mobile Responsive */}
-            <div className="px-3 py-3 sm:px-6 sm:py-4 bg-gray-900 border-t-2 border-gray-800">
+            {!showVideoCall && (
+              <div className="px-3 py-3 sm:px-6 sm:py-4 bg-gray-900 border-t-2 border-gray-800">
               <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 scrollbar-hide">
                 <button
                   onClick={() => setInputText('Web sayt yaratish bo\'yicha gaplashmoqchiman')}
@@ -661,10 +816,12 @@ export default function ChatWidget() {
                   Narx
                 </button>
               </div>
-            </div>
+              </div>
+            )}
 
             {/* Input - Dark Premium - Mobile Responsive */}
-            <form onSubmit={handleSendMessage} className="p-3 sm:p-6 bg-gray-900 border-t-2 border-gray-800">
+            {!showVideoCall && (
+              <form onSubmit={handleSendMessage} className="p-3 sm:p-6 bg-gray-900 border-t-2 border-gray-800">
               <div className="flex gap-2 sm:gap-3 items-end">
                 {/* Input field */}
                 <div className="flex-1 relative">
@@ -716,7 +873,8 @@ export default function ChatWidget() {
                   Email
                 </a>
               </div>
-            </form>
+              </form>
+            )}
           </div>
         )}
       </div>
