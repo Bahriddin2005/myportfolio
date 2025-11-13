@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 
 export default function Contact() {
-  const [showCalendar, setShowCalendar] = useState(false)
+  const [showVideoCall, setShowVideoCall] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -10,14 +10,19 @@ export default function Contact() {
     message: ''
   })
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const [roomName, setRoomName] = useState('')
 
-  // Load Calendly widget script
+  // Load Jitsi Meet script
   useEffect(() => {
-    if (showCalendar && typeof window !== 'undefined') {
+    if (showVideoCall && typeof window !== 'undefined') {
       const script = document.createElement('script')
-      script.src = 'https://assets.calendly.com/assets/external/widget.js'
+      script.src = 'https://meet.jit.si/external_api.js'
       script.async = true
       document.body.appendChild(script)
+      
+      script.onload = () => {
+        initializeJitsi()
+      }
       
       return () => {
         if (document.body.contains(script)) {
@@ -25,23 +30,67 @@ export default function Contact() {
         }
       }
     }
-  }, [showCalendar])
+  }, [showVideoCall, roomName])
+
+  const initializeJitsi = () => {
+    if (typeof window !== 'undefined' && window.JitsiMeetExternalAPI && roomName) {
+      const domain = 'meet.jit.si'
+      const options = {
+        roomName: roomName,
+        width: '100%',
+        height: 700,
+        parentNode: document.querySelector('#jitsi-container'),
+        configOverwrite: {
+          startWithAudioMuted: true,
+          startWithVideoMuted: false,
+          enableWelcomePage: false,
+          prejoinPageEnabled: false
+        },
+        interfaceConfigOverwrite: {
+          SHOW_JITSI_WATERMARK: false,
+          SHOW_WATERMARK_FOR_GUESTS: false,
+          DEFAULT_BACKGROUND: '#474747',
+          TOOLBAR_BUTTONS: [
+            'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+            'fodeviceselection', 'hangup', 'profile', 'chat', 'recording',
+            'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
+            'videoquality', 'filmstrip', 'feedback', 'stats', 'shortcuts',
+            'tileview', 'download', 'help', 'mute-everyone'
+          ]
+        },
+        userInfo: {
+          displayName: formData.name || 'Guest'
+        }
+      }
+      
+      new window.JitsiMeetExternalAPI(domain, options)
+    }
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    
+    // Generate unique room name
+    const timestamp = Date.now()
+    const cleanName = formData.name.toLowerCase().replace(/[^a-z0-9]/g, '')
+    const room = `bahriddin-${cleanName}-${timestamp}`
+    
     // Save to localStorage
     const submissions = JSON.parse(localStorage.getItem('contactSubmissions') || '[]')
     submissions.push({
       ...formData,
       timestamp: new Date().toISOString(),
-      id: Date.now()
+      id: timestamp,
+      roomName: room,
+      status: 'pending'
     })
     localStorage.setItem('contactSubmissions', JSON.stringify(submissions))
     
+    setRoomName(room)
     setFormSubmitted(true)
-    setShowCalendar(true)
+    setShowVideoCall(true)
     
-    // Scroll to calendar
+    // Scroll to top
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }, 300)
@@ -199,7 +248,7 @@ export default function Contact() {
               </div>
             </div>
           ) : (
-            /* Calendly Embedded Widget */
+            /* Video Call Interface */
             <div className="animate-slide-up">
               <div className="text-center mb-8">
                 <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-xl animate-bounce">
@@ -209,26 +258,63 @@ export default function Contact() {
                   Ariza Qabul Qilindi!
                 </h2>
                 <p className="text-lg text-gray-600 font-semibold mb-2">
-                  Endi video konsultatsiya vaqtini tanlang 👇
+                  Video xona tayyor! Men qo'shilguncha kutib turing 👇
                 </p>
-                <p className="text-sm text-green-600 font-black bg-green-50 inline-block px-4 py-2 rounded-full">
-                  ✨ Boshqa saytga o'tmaysiz, bu yerda booking qiling!
+                <p className="text-sm text-green-600 font-black bg-green-50 inline-block px-4 py-2 rounded-full mb-4">
+                  ✨ 100% o'z saytimizda - boshqa joyga o'tmaysiz!
                 </p>
+                
+                {/* Waiting instructions */}
+                <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 max-w-2xl mx-auto mb-6">
+                  <h3 className="text-xl font-black text-blue-900 mb-3 flex items-center justify-center gap-2">
+                    <span className="text-2xl">🎥</span>
+                    Qanday Ishlaydi?
+                  </h3>
+                  <div className="text-left space-y-2 text-sm text-blue-800 font-semibold">
+                    <p>✅ <strong>Siz:</strong> Video xonada kutasiz (pastda)</p>
+                    <p>✅ <strong>Men:</strong> Arizangizni ko'rib, shu xonaga qo'shilaman</p>
+                    <p>✅ <strong>Natija:</strong> To'g'ridan-to'g'ri video orqali gaplashamiz!</p>
+                    <p className="text-xs mt-3 text-blue-600">
+                      💡 Xonaning linkini saqlang - keyin ham kirishingiz mumkin: <strong>Room: {roomName}</strong>
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              {/* Embedded Calendly Widget */}
+              {/* Jitsi Video Container */}
               <div 
-                className="calendly-inline-widget bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-gray-100" 
-                data-url="https://calendly.com/baxadevuz/30min?hide_gdpr_banner=1&hide_event_type_details=1&background_color=ffffff&text_color=000000&primary_color=3b82f6"
+                id="jitsi-container"
+                className="bg-gray-900 rounded-3xl shadow-2xl overflow-hidden border-2 border-gray-700"
                 style={{minWidth: '320px', height: '700px'}}
-              ></div>
+              >
+                {!showVideoCall && (
+                  <div className="flex items-center justify-center h-full text-white">
+                    <div className="text-center">
+                      <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+                      <p className="font-bold">Video xona ochilmoqda...</p>
+                    </div>
+                  </div>
+                )}
+              </div>
               
               <div className="mt-8 text-center space-y-4">
+                <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4">
+                  <p className="text-sm text-yellow-900 font-black">
+                    ⚠️ Kamera va mikrofon ruxsatini bering!
+                  </p>
+                  <p className="text-xs text-yellow-700 font-semibold mt-1">
+                    Browser so'rasa "Allow" bosing
+                  </p>
+                </div>
+                
                 <button
                   onClick={() => {
                     setFormSubmitted(false)
-                    setShowCalendar(false)
+                    setShowVideoCall(false)
+                    setRoomName('')
                     setFormData({ name: '', email: '', phone: '', message: '' })
+                    // Reload page to clear Jitsi
+                    window.location.reload()
                   }}
                   className="text-gray-600 hover:text-gray-900 font-bold underline text-lg"
                 >
