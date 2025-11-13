@@ -55,17 +55,42 @@ export default function Contact() {
             </h1>
             <div className="max-w-3xl mx-auto space-y-4 mb-8">
               <p className="text-2xl font-black text-gray-900 uppercase tracking-tight">
-                3 Ways to Connect
+                4 Ways to Connect
               </p>
               <p className="text-lg text-gray-700 leading-relaxed font-semibold">
-                Submit a <span className="font-black text-blue-600 border-b-2 border-blue-600">project inquiry</span>, 
+                Schedule a <span className="font-black text-red-600 border-b-2 border-red-600">video call</span>, submit a <span className="font-black text-blue-600 border-b-2 border-blue-600">project inquiry</span>, 
                 start a <span className="font-black text-purple-600 border-b-2 border-purple-600">live chat</span>, or 
                 message on <span className="font-black text-cyan-600 border-b-2 border-cyan-600">Telegram</span> — choose what works for you.
               </p>
             </div>
 
             {/* Contact Options */}
-            <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-12">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mt-12">
+              {/* Video Call - NEW! */}
+              <a 
+                href="https://calendly.com/baxadevuz/30min" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-gradient-to-br from-red-500 via-orange-500 to-red-600 rounded-2xl p-8 shadow-xl hover-lift text-white relative overflow-hidden group hover:from-red-600 hover:via-orange-600 hover:to-red-700 transition-all cursor-pointer"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center text-3xl mb-4 mx-auto backdrop-blur-sm group-hover:scale-110 transition-transform">
+                    🎥
+                  </div>
+                  <h3 className="font-black text-xl mb-2 tracking-tight">Video Call</h3>
+                  <p className="text-sm text-red-50 font-semibold">Schedule 15-60 min consultation</p>
+                  <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    Book Now
+                  </div>
+                  {/* NEW badge */}
+                  <div className="absolute top-3 right-3 px-2 py-1 bg-yellow-400 text-red-900 rounded-full text-[10px] font-black uppercase animate-pulse">
+                    NEW
+                  </div>
+                </div>
+              </a>
+
               <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-8 shadow-xl border-2 border-blue-200 hover:border-blue-600 hover-lift group relative overflow-hidden transition-all">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
                 <div className="relative z-10">
@@ -106,6 +131,122 @@ export default function Contact() {
           </div>
         </section>
 
+        {/* Premium Video Call CTA */}
+        <section className="container mx-auto px-6 py-16 max-w-7xl">
+          <div className="relative bg-gradient-to-br from-red-500 via-orange-500 to-red-600 rounded-3xl overflow-hidden shadow-2xl">
+            {/* Animated background */}
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute top-0 left-0 w-96 h-96 bg-yellow-400 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute bottom-0 right-0 w-96 h-96 bg-red-700 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+            </div>
+
+            <div className="relative z-10 p-8 sm:p-12 lg:p-16">
+              <div className="grid lg:grid-cols-2 gap-8 items-center">
+                {/* Left: Content */}
+                <div className="text-white">
+                  <div className="inline-block mb-4">
+                    <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white rounded-full text-xs font-black uppercase tracking-wider border border-white/30">
+                      🎥 Video Consultation
+                    </span>
+                  </div>
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-4 tracking-tight leading-tight">
+                    Let's Discuss Your Project <span className="text-yellow-300">Face-to-Face</span>
+                  </h2>
+                  <p className="text-lg text-red-50 font-semibold mb-6 leading-relaxed">
+                    Loyihangiz haqida batafsil gaplashing. Texnologiya tanlash, narx muhokamasi, va boshqa savollaringizga javob olasiz.
+                  </p>
+                  
+                  {/* Benefits */}
+                  <div className="space-y-3 mb-8">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-green-900" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 14.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <span className="text-white font-bold">15, 30, yoki 60 daqiqalik uchrashuv</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-green-900" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 14.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <span className="text-white font-bold">Google Meet yoki Zoom orqali</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-green-900" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 14.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <span className="text-white font-bold">Bepul maslahat va narx hisoblash</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-green-400 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-green-900" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 14.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <span className="text-white font-bold">O'zbekcha yoki Inglizcha</span>
+                    </div>
+                  </div>
+
+                  <a 
+                    href="https://calendly.com/baxadevuz/30min"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-white hover:bg-gray-50 text-red-600 rounded-xl font-black text-lg shadow-2xl hover:shadow-3xl hover:scale-105 transition-all uppercase tracking-wide"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Vaqt Band Qilish
+                    <svg className="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
+
+                {/* Right: Video Preview / Illustration */}
+                <div className="hidden lg:block">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-3xl blur-2xl opacity-30 animate-pulse"></div>
+                    <div className="relative bg-white/10 backdrop-blur-xl rounded-3xl p-8 border-2 border-white/20">
+                      <div className="aspect-video bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl flex items-center justify-center mb-4 relative overflow-hidden">
+                        {/* Fake video interface */}
+                        <div className="absolute top-4 left-4 flex gap-2">
+                          <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                          <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        </div>
+                        <div className="text-6xl">🎥</div>
+                        <div className="absolute bottom-4 right-4 px-3 py-1 bg-red-600 text-white rounded-lg text-xs font-bold flex items-center gap-1">
+                          <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                          LIVE
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="aspect-video bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center text-2xl">
+                          👤
+                        </div>
+                        <div className="aspect-video bg-gradient-to-br from-green-600 to-cyan-600 rounded-lg flex items-center justify-center text-2xl ring-2 ring-yellow-400">
+                          👨‍💻
+                        </div>
+                        <div className="aspect-video bg-gradient-to-br from-gray-700 to-gray-800 rounded-lg flex items-center justify-center opacity-50">
+                          <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="container mx-auto px-6 py-20 max-w-7xl">
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Contact Info */}
@@ -113,6 +254,29 @@ export default function Contact() {
               <h2 className="text-2xl font-bold mb-6">Aloqa ma'lumotlari</h2>
 
               <div className="space-y-6 mb-8">
+                {/* Video Call - Premium */}
+                <a 
+                  href="https://calendly.com/baxadevuz/30min"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-4 p-4 bg-gradient-to-br from-red-50 to-orange-50 rounded-xl border-2 border-red-200 hover:border-red-400 hover:shadow-lg transition-all group"
+                >
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform">
+                    🎥
+                  </div>
+                  <div>
+                    <div className="text-sm text-red-600 font-bold mb-1 flex items-center gap-2">
+                      Video Call
+                      <span className="px-1.5 py-0.5 bg-yellow-400 text-red-900 rounded text-[10px] font-black uppercase">
+                        NEW
+                      </span>
+                    </div>
+                    <div className="font-bold text-gray-900 group-hover:text-red-600 transition-colors">
+                      Schedule a consultation →
+                    </div>
+                  </div>
+                </a>
+
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl">
                     📧
