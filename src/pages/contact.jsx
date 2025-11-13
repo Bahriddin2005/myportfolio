@@ -38,93 +38,132 @@ export default function Contact() {
         <meta name="description" content="Bahriddin bilan bog'laning. Loyiha muhokama qilish yoki ishga yollash uchun aloqaga chiqing." />
       </Head>
 
-      <div className="min-h-screen bg-white">
-        {/* Header */}
-        <section className="bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 py-20">
-          <div className="container mx-auto px-6 max-w-7xl text-center">
-            <div className="inline-block mb-6">
-              <span className="px-4 py-2 bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 rounded-full text-sm font-bold border-2 border-blue-200">
-                💬 Aloqa variantlari
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        {/* Header - Premium Animated */}
+        <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-cyan-600 py-24 overflow-hidden">
+          {/* Animated background blobs */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-400 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+            <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-cyan-400 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
+          </div>
+
+          {/* Floating particles */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-20 left-10 w-2 h-2 bg-white rounded-full animate-ping"></div>
+            <div className="absolute top-40 right-20 w-3 h-3 bg-yellow-300 rounded-full animate-ping" style={{animationDelay: '0.5s'}}></div>
+            <div className="absolute bottom-32 left-1/3 w-2 h-2 bg-cyan-300 rounded-full animate-ping" style={{animationDelay: '1s'}}></div>
+            <div className="absolute bottom-20 right-1/4 w-3 h-3 bg-pink-300 rounded-full animate-ping" style={{animationDelay: '1.5s'}}></div>
+          </div>
+
+          <div className="container mx-auto px-6 max-w-7xl text-center relative z-10">
+            <div className="inline-block mb-6 animate-slide-up">
+              <span className="px-5 py-2.5 bg-white/20 backdrop-blur-xl text-white rounded-full text-sm font-black uppercase tracking-wider border-2 border-white/30 shadow-2xl">
+                💬 4 Aloqa Yo'li
               </span>
             </div>
-            <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tighter leading-[0.9]">
-              Let's <span className="text-blue-600 font-mono">talk</span>
-              <span className="block text-4xl md:text-6xl text-gray-600 font-bold tracking-tight mt-4">
-                about your next project
+            <h1 className="text-5xl sm:text-6xl md:text-8xl font-black mb-8 tracking-tighter leading-[0.9] text-white animate-slide-up">
+              Let's <span className="text-yellow-300 font-mono relative inline-block">
+                talk
+                <div className="absolute -bottom-2 left-0 right-0 h-2 bg-yellow-300 rounded-full opacity-30 blur-sm"></div>
+              </span>
+              <span className="block text-3xl md:text-5xl text-blue-100 font-bold tracking-tight mt-6">
+                about your next project ✨
               </span>
             </h1>
-            <div className="max-w-3xl mx-auto space-y-4 mb-8">
-              <p className="text-2xl font-black text-gray-900 uppercase tracking-tight">
+            <div className="max-w-3xl mx-auto space-y-4 mb-10 animate-slide-up">
+              <p className="text-2xl font-black text-white uppercase tracking-tight flex items-center justify-center gap-3">
+                <span className="w-8 h-0.5 bg-yellow-300 rounded-full"></span>
                 4 Ways to Connect
+                <span className="w-8 h-0.5 bg-yellow-300 rounded-full"></span>
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed font-semibold">
-                Schedule a <span className="font-black text-red-600 border-b-2 border-red-600">video call</span>, submit a <span className="font-black text-blue-600 border-b-2 border-blue-600">project inquiry</span>, 
-                start a <span className="font-black text-purple-600 border-b-2 border-purple-600">live chat</span>, or 
-                message on <span className="font-black text-cyan-600 border-b-2 border-cyan-600">Telegram</span> — choose what works for you.
+              <p className="text-lg text-blue-50 leading-relaxed font-semibold">
+                Schedule a <span className="font-black text-yellow-300 border-b-2 border-yellow-300">video call</span>, submit a <span className="font-black text-green-300 border-b-2 border-green-300">project inquiry</span>, 
+                start a <span className="font-black text-pink-300 border-b-2 border-pink-300">live chat</span>, or 
+                message on <span className="font-black text-cyan-300 border-b-2 border-cyan-300">Telegram</span> — choose what works for you.
               </p>
             </div>
 
-            {/* Contact Options */}
+            {/* Contact Options - Premium Cards */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mt-12">
-              {/* Video Call - NEW! */}
+              {/* Video Call - NEW! Premium Glow */}
               <a 
                 href="https://calendly.com/baxadevuz/30min" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="bg-gradient-to-br from-red-500 via-orange-500 to-red-600 rounded-2xl p-8 shadow-xl hover-lift text-white relative overflow-hidden group hover:from-red-600 hover:via-orange-600 hover:to-red-700 transition-all cursor-pointer"
+                className="bg-gradient-to-br from-red-500 via-orange-500 to-red-600 rounded-3xl p-8 shadow-2xl hover:shadow-red-500/50 text-white relative overflow-hidden group hover:from-red-600 hover:via-orange-600 hover:to-red-700 transition-all duration-500 cursor-pointer animate-slide-up hover:scale-105 hover:-translate-y-2"
               >
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-red-600 opacity-0 group-hover:opacity-30 transition-opacity duration-500 blur-xl"></div>
                 <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
                 <div className="relative z-10">
-                  <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center text-3xl mb-4 mx-auto backdrop-blur-sm group-hover:scale-110 transition-transform">
+                  <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center text-4xl mb-4 mx-auto backdrop-blur-sm group-hover:scale-125 group-hover:rotate-6 transition-all duration-500 shadow-xl">
                     🎥
                   </div>
                   <h3 className="font-black text-xl mb-2 tracking-tight">Video Call</h3>
-                  <p className="text-sm text-red-50 font-semibold">Schedule 15-60 min consultation</p>
-                  <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <p className="text-sm text-red-50 font-semibold mb-4">Schedule 15-60 min consultation</p>
+                  <div className="flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400"></div>
                     Book Now
                   </div>
-                  {/* NEW badge */}
-                  <div className="absolute top-3 right-3 px-2 py-1 bg-yellow-400 text-red-900 rounded-full text-[10px] font-black uppercase animate-pulse">
-                    NEW
+                  {/* Premium NEW badge */}
+                  <div className="absolute top-4 right-4 px-3 py-1.5 bg-yellow-400 text-red-900 rounded-full text-[10px] font-black uppercase shadow-lg">
+                    <span className="animate-pulse">✨ NEW</span>
                   </div>
                 </div>
               </a>
 
-              <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-8 shadow-xl border-2 border-blue-200 hover:border-blue-600 hover-lift group relative overflow-hidden transition-all">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
+              {/* Submit Inquiry - Premium Glass */}
+              <div className="bg-white/90 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl hover:shadow-blue-500/30 border-2 border-blue-200 hover:border-blue-500 group relative overflow-hidden transition-all duration-500 animate-slide-up hover:scale-105 hover:-translate-y-2" style={{animationDelay: '0.1s'}}>
+                <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl group-hover:scale-150 group-hover:bg-blue-500/20 transition-all duration-500"></div>
                 <div className="relative z-10">
-                  <div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center text-3xl mb-4 mx-auto shadow-lg group-hover:scale-110 transition-transform">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center text-4xl mb-4 mx-auto shadow-2xl shadow-blue-500/50 group-hover:scale-125 group-hover:-rotate-6 transition-all duration-500">
                     📝
                   </div>
-                  <h3 className="font-black text-xl mb-2 tracking-tight">Submit Inquiry</h3>
-                  <p className="text-sm text-gray-700 font-semibold">Detailed project brief, 24hr response</p>
+                  <h3 className="font-black text-xl mb-2 tracking-tight text-gray-900">Submit Inquiry</h3>
+                  <p className="text-sm text-gray-600 font-semibold mb-4">Detailed project brief, 24hr response</p>
+                  <div className="flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider text-blue-600 bg-blue-50 px-4 py-2 rounded-full">
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </svg>
+                    Send Brief
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-purple-600 rounded-2xl p-8 shadow-xl hover-lift text-white relative overflow-hidden group hover:bg-purple-700 transition-all">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              {/* Live Chat - Premium Gradient */}
+              <div className="bg-gradient-to-br from-purple-600 via-purple-700 to-blue-600 rounded-3xl p-8 shadow-2xl hover:shadow-purple-500/50 text-white relative overflow-hidden group hover:from-purple-700 hover:via-purple-800 hover:to-blue-700 transition-all duration-500 animate-slide-up hover:scale-105 hover:-translate-y-2" style={{animationDelay: '0.2s'}}>
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-500 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10">
-                  <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center text-3xl mb-4 mx-auto backdrop-blur-sm group-hover:scale-110 transition-transform">
+                  <div className="w-20 h-20 bg-white/20 rounded-2xl flex items-center justify-center text-4xl mb-4 mx-auto backdrop-blur-sm group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 shadow-xl">
                     💬
                   </div>
                   <h3 className="font-black text-xl mb-2 tracking-tight">Live Chat</h3>
-                  <p className="text-sm text-purple-100 font-semibold">Instant response, direct conversation</p>
-                  <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <p className="text-sm text-purple-100 font-semibold mb-4">Instant response, direct conversation</p>
+                  <div className="flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider bg-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400"></div>
                     Online Now
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/80 backdrop-blur-xl rounded-2xl p-8 shadow-xl border-2 border-cyan-200 hover:border-cyan-600 hover-lift group relative overflow-hidden transition-all">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
+              {/* Telegram - Premium Glass */}
+              <div className="bg-white/90 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl hover:shadow-cyan-500/30 border-2 border-cyan-200 hover:border-cyan-500 group relative overflow-hidden transition-all duration-500 animate-slide-up hover:scale-105 hover:-translate-y-2" style={{animationDelay: '0.3s'}}>
+                <div className="absolute top-0 right-0 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl group-hover:scale-150 group-hover:bg-cyan-500/20 transition-all duration-500"></div>
                 <div className="relative z-10">
-                  <div className="w-16 h-16 bg-cyan-600 rounded-xl flex items-center justify-center text-3xl mb-4 mx-auto shadow-lg group-hover:scale-110 transition-transform">
+                  <div className="w-20 h-20 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center text-4xl mb-4 mx-auto shadow-2xl shadow-cyan-500/50 group-hover:scale-125 group-hover:rotate-6 transition-all duration-500">
                     ✈️
                   </div>
-                  <h3 className="font-black text-xl mb-2 tracking-tight">Telegram</h3>
-                  <p className="text-sm text-gray-700 font-semibold">Message @baxadevuz directly</p>
+                  <h3 className="font-black text-xl mb-2 tracking-tight text-gray-900">Telegram</h3>
+                  <p className="text-sm text-gray-600 font-semibold mb-4">Message @baxadevuz directly</p>
+                  <div className="flex items-center justify-center gap-2 text-xs font-black uppercase tracking-wider text-cyan-600 bg-cyan-50 px-4 py-2 rounded-full">
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                    </svg>
+                    Open Chat
+                  </div>
                 </div>
               </div>
             </div>
