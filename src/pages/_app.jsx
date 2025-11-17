@@ -1,6 +1,12 @@
 import '@/styles/globals.css'
 import React, { useState } from 'react'
 import ChatWidget from '@/components/ChatWidget'
+import dynamic from 'next/dynamic'
+
+// Dynamically import ChatWidget to prevent SSR (fixes hydration errors)
+const ChatWidgetNoSSR = dynamic(() => import('@/components/ChatWidget'), {
+  ssr: false
+})
 
 export default function App({ Component, pageProps }) {
   const [showImageUpload, setShowImageUpload] = useState(false)
@@ -151,8 +157,8 @@ export default function App({ Component, pageProps }) {
         <Component {...pageProps} />
       </main>
 
-      {/* Live Chat Widget */}
-      <ChatWidget />
+      {/* Live Chat Widget - No SSR to prevent hydration errors */}
+      <ChatWidgetNoSSR />
 
       {/* Admin Login Button - Double Click Logo */}
       {mounted && (
