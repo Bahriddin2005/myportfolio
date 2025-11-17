@@ -8,17 +8,21 @@ export default function App({ Component, pageProps }) {
   const [isAdmin, setIsAdmin] = useState(false)
   const [adminPassword, setAdminPassword] = useState('')
   const [unreadCount, setUnreadCount] = useState(0)
+  const [mounted, setMounted] = useState(false)
 
-  // Check admin status on load
+  // Check admin status on load (client-side only)
   React.useEffect(() => {
+    setMounted(true)
     if (typeof window !== 'undefined') {
       const adminStatus = localStorage.getItem('isAdmin')
       setIsAdmin(adminStatus === 'true')
     }
   }, [])
 
-  // Check unread messages
+  // Check unread messages (client-side only)
   React.useEffect(() => {
+    if (!mounted) return
+    
     const checkUnread = () => {
       if (typeof window !== 'undefined') {
         const chatMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]')
@@ -30,7 +34,7 @@ export default function App({ Component, pageProps }) {
     checkUnread()
     const interval = setInterval(checkUnread, 5000)
     return () => clearInterval(interval)
-  }, [])
+  }, [mounted])
 
   const handleAdminLogin = (e) => {
     e.preventDefault()
@@ -110,7 +114,7 @@ export default function App({ Component, pageProps }) {
                 <span className="text-green-400 text-lg">$</span>
                 <span className="font-bold">resume</span>
               </a>
-              {isAdmin && (
+              {mounted && isAdmin && (
                 <a href="/administration" className="group font-mono text-base text-gray-400 hover:text-purple-400 transition-all flex items-center gap-2 px-4 py-3 hover:bg-gray-800 rounded-lg border-2 border-purple-600/30 hover:border-purple-600 relative">
                   <span className="text-purple-400 text-lg">⚙️</span>
                   <span className="font-bold">admin</span>
@@ -151,11 +155,12 @@ export default function App({ Component, pageProps }) {
       <ChatWidget />
 
       {/* Admin Login Button - Double Click Logo */}
-      <div 
-        onDoubleClick={() => !isAdmin && setShowAdminLogin(true)}
-        className="fixed bottom-6 left-6 z-40"
-      >
-        {!isAdmin ? (
+      {mounted && (
+        <div 
+          onDoubleClick={() => !isAdmin && setShowAdminLogin(true)}
+          className="fixed bottom-6 left-6 z-40"
+        >
+          {!isAdmin ? (
           <div 
             className="group p-3 bg-gray-800 hover:bg-gray-700 rounded-lg cursor-pointer transition-all opacity-30 hover:opacity-100"
             title="Double-click for admin"
@@ -190,8 +195,9 @@ export default function App({ Component, pageProps }) {
               </svg>
             </button>
           </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {/* Admin Login Modal */}
       {showAdminLogin && (
@@ -276,7 +282,7 @@ export default function App({ Component, pageProps }) {
               </label>
             </div>
 
-            {typeof window !== 'undefined' && localStorage.getItem('profileImage') && (
+            {mounted && typeof window !== 'undefined' && localStorage.getItem('profileImage') && (
               <div className="flex gap-3">
                 <button
                   onClick={removeImage}

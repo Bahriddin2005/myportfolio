@@ -1,8 +1,13 @@
 // Chat Service - Handles both Supabase and localStorage
 import { supabase, isSupabaseEnabled } from './supabase'
 
-// Generate unique session ID
+// Generate unique session ID (client-side only)
 export const generateSessionId = () => {
+  if (typeof window === 'undefined') {
+    // Return a temporary ID during SSR
+    return `session_temp_${Date.now()}`
+  }
+  
   const existing = localStorage.getItem('chatSessionId')
   if (existing) return existing
   

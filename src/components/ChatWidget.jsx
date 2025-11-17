@@ -18,6 +18,7 @@ export default function ChatWidget() {
   const [showVideoCall, setShowVideoCall] = useState(false)
   const [videoRoomName, setVideoRoomName] = useState('')
   const jitsiApiRef = React.useRef(null)
+  const [mounted, setMounted] = useState(false)
 
   // Load Jitsi script when video call is started
   React.useEffect(() => {
@@ -101,12 +102,14 @@ export default function ChatWidget() {
   const handleUserTyping = (text) => {
     setInputText(text)
     
-    const sessionId = localStorage.getItem('chatSessionId')
-    if (sessionId && text.trim()) {
-      // Set user typing indicator for admin to see
-      localStorage.setItem('userTyping_' + sessionId, Date.now().toString())
-    } else if (sessionId) {
-      localStorage.removeItem('userTyping_' + sessionId)
+    if (typeof window !== 'undefined') {
+      const sessionId = localStorage.getItem('chatSessionId')
+      if (sessionId && text.trim()) {
+        // Set user typing indicator for admin to see
+        localStorage.setItem('userTyping_' + sessionId, Date.now().toString())
+      } else if (sessionId) {
+        localStorage.removeItem('userTyping_' + sessionId)
+      }
     }
   }
 
@@ -248,9 +251,13 @@ export default function ChatWidget() {
     }
   }
 
-  // Load saved messages on component mount
+  // Load saved messages on component mount (client-side only)
   React.useEffect(() => {
+    setMounted(true)
+    
     const loadSavedMessages = async () => {
+      if (typeof window === 'undefined') return
+      
       // Get or create session ID
       const sid = chatService.generateSessionId()
       setSessionId(sid)
@@ -287,8 +294,10 @@ export default function ChatWidget() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isAdminTyping])
 
-  // Listen for custom event to open chat
+  // Listen for custom event to open chat (client-side only)
   React.useEffect(() => {
+    if (typeof window === 'undefined') return
+    
     const handleOpenChat = () => setIsOpen(true)
     window.addEventListener('openChat', handleOpenChat)
     return () => window.removeEventListener('openChat', handleOpenChat)
@@ -343,12 +352,14 @@ export default function ChatWidget() {
       }
 
       // Check typing indicator (still using localStorage for real-time typing)
-      const typingTimestamp = localStorage.getItem('adminTyping_' + sessionId)
-      if (typingTimestamp) {
-        const timeSinceTyping = Date.now() - parseInt(typingTimestamp)
-        setIsAdminTyping(timeSinceTyping < 5000)
-      } else {
-        setIsAdminTyping(false)
+      if (typeof window !== 'undefined') {
+        const typingTimestamp = localStorage.getItem('adminTyping_' + sessionId)
+        if (typingTimestamp) {
+          const timeSinceTyping = Date.now() - parseInt(typingTimestamp)
+          setIsAdminTyping(timeSinceTyping < 5000)
+        } else {
+          setIsAdminTyping(false)
+        }
       }
     }
 
@@ -365,7 +376,9 @@ export default function ChatWidget() {
     setInputText('')
     
     // Clear user typing indicator
-    localStorage.removeItem('userTyping_' + sessionId)
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('userTyping_' + sessionId)
+    }
 
     // Send message to database
     const result = await chatService.sendMessage(sessionId, 'user', messageText)
@@ -389,6 +402,11 @@ export default function ChatWidget() {
         }
       }, 2000)
     }
+  }
+
+  // Don't render until mounted (prevents hydration errors)
+  if (!mounted) {
+    return null
   }
 
   return (

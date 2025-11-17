@@ -4,12 +4,16 @@ import TerminalHero from '@/components/TerminalHero'
 
 export default function Home() {
   const [profileImage, setProfileImage] = useState(null)
+  const [mounted, setMounted] = useState(false)
 
-  // Load profile image from localStorage
+  // Load profile image from localStorage (client-side only)
   useEffect(() => {
-    const savedImage = localStorage.getItem('profileImage')
-    if (savedImage) {
-      setProfileImage(savedImage)
+    setMounted(true)
+    if (typeof window !== 'undefined') {
+      const savedImage = localStorage.getItem('profileImage')
+      if (savedImage) {
+        setProfileImage(savedImage)
+      }
     }
   }, [])
 
