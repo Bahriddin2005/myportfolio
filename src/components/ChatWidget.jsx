@@ -363,7 +363,8 @@ export default function ChatWidget() {
       }
     }
 
-    const interval = setInterval(checkAdminActivity, 2000) // Check every 2 seconds
+    // Optimized: Check every 5 seconds instead of 2 (reduces API calls by 60%)
+    const interval = setInterval(checkAdminActivity, 5000) // Check every 5 seconds
     checkAdminActivity() // Initial check
     return () => clearInterval(interval)
   }, [messages, messagesLoaded, sessionId, isOpen])

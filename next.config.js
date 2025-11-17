@@ -20,6 +20,12 @@ const nextConfig = {
   // Production optimizations
   swcMinify: true,
   
+  // Performance optimizations
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['react-icons', 'framer-motion'],
+  },
+  
   // Trailing slash
   trailingSlash: false,
   

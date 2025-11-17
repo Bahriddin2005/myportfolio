@@ -2,6 +2,7 @@ import '@/styles/globals.css'
 import React, { useState } from 'react'
 import ChatWidget from '@/components/ChatWidget'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 
 // Dynamically import ChatWidget to prevent SSR (fixes hydration errors)
 const ChatWidgetNoSSR = dynamic(() => import('@/components/ChatWidget'), {
@@ -38,7 +39,8 @@ export default function App({ Component, pageProps }) {
     }
     
     checkUnread()
-    const interval = setInterval(checkUnread, 5000)
+    // Optimized: Check every 10 seconds instead of 5 (reduces localStorage reads)
+    const interval = setInterval(checkUnread, 10000)
     return () => clearInterval(interval)
   }, [mounted])
 
@@ -90,7 +92,7 @@ export default function App({ Component, pageProps }) {
         <div className="container mx-auto px-6 py-4 max-w-7xl">
           <div className="flex items-center justify-between">
             {/* Logo - Terminal Style */}
-            <a href="/" className="group flex items-center gap-3">
+            <Link href="/" className="group flex items-center gap-3">
               <div className="px-3 py-2 bg-gray-800 border-2 border-gray-700 group-hover:border-blue-600 rounded-lg transition-all">
                 <span className="font-mono text-gray-400 text-xs">~/</span>
                 <span className="font-mono font-bold text-white">bahriddin</span>
@@ -100,28 +102,28 @@ export default function App({ Component, pageProps }) {
                   <span className="text-blue-400">const</span> role <span className="text-gray-600">=</span> <span className="text-green-400">"developer"</span>
                 </div>
               </div>
-            </a>
+            </Link>
 
-            {/* Desktop Menu - Larger Terminal Commands */}
+            {/* Desktop Menu - Larger Terminal Commands - Optimized with Next.js Link */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="/" className="group font-mono text-base text-gray-400 hover:text-blue-400 transition-all flex items-center gap-2 px-4 py-3 hover:bg-gray-800 rounded-lg">
+              <Link href="/" className="group font-mono text-base text-gray-400 hover:text-blue-400 transition-all flex items-center gap-2 px-4 py-3 hover:bg-gray-800 rounded-lg">
                 <span className="text-green-400 text-lg">$</span>
                 <span className="font-bold">home</span>
-              </a>
-              <a href="/about" className="group font-mono text-base text-gray-400 hover:text-purple-400 transition-all flex items-center gap-2 px-4 py-3 hover:bg-gray-800 rounded-lg">
+              </Link>
+              <Link href="/about" className="group font-mono text-base text-gray-400 hover:text-purple-400 transition-all flex items-center gap-2 px-4 py-3 hover:bg-gray-800 rounded-lg">
                 <span className="text-green-400 text-lg">$</span>
                 <span className="font-bold">about</span>
-              </a>
-              <a href="/projects" className="group font-mono text-base text-gray-400 hover:text-cyan-400 transition-all flex items-center gap-2 px-4 py-3 hover:bg-gray-800 rounded-lg">
+              </Link>
+              <Link href="/projects" className="group font-mono text-base text-gray-400 hover:text-cyan-400 transition-all flex items-center gap-2 px-4 py-3 hover:bg-gray-800 rounded-lg">
                 <span className="text-green-400 text-lg">$</span>
                 <span className="font-bold">projects</span>
-              </a>
-              <a href="/resume" className="group font-mono text-base text-gray-400 hover:text-yellow-400 transition-all flex items-center gap-2 px-4 py-3 hover:bg-gray-800 rounded-lg">
+              </Link>
+              <Link href="/resume" className="group font-mono text-base text-gray-400 hover:text-yellow-400 transition-all flex items-center gap-2 px-4 py-3 hover:bg-gray-800 rounded-lg">
                 <span className="text-green-400 text-lg">$</span>
                 <span className="font-bold">resume</span>
-              </a>
+              </Link>
               {mounted && isAdmin && (
-                <a href="/administration" className="group font-mono text-base text-gray-400 hover:text-purple-400 transition-all flex items-center gap-2 px-4 py-3 hover:bg-gray-800 rounded-lg border-2 border-purple-600/30 hover:border-purple-600 relative">
+                <Link href="/administration" className="group font-mono text-base text-gray-400 hover:text-purple-400 transition-all flex items-center gap-2 px-4 py-3 hover:bg-gray-800 rounded-lg border-2 border-purple-600/30 hover:border-purple-600 relative">
                   <span className="text-purple-400 text-lg">⚙️</span>
                   <span className="font-bold">admin</span>
                   <span className="px-2 py-0.5 bg-purple-600 text-white rounded text-xs font-black">ADMIN</span>
@@ -135,12 +137,12 @@ export default function App({ Component, pageProps }) {
                       </div>
                     </div>
                   )}
-                </a>
+                </Link>
               )}
-              <a href="/contact" className="group px-8 py-4 bg-blue-600 hover:bg-blue-700 border-2 border-blue-500 text-white rounded-lg font-mono text-base font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-3">
+              <Link href="/contact" className="group px-8 py-4 bg-blue-600 hover:bg-blue-700 border-2 border-blue-500 text-white rounded-lg font-mono text-base font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-3">
                 <span className="text-green-300 text-lg">$</span>
                 <span>contact</span>
-              </a>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -328,14 +330,14 @@ export default function App({ Component, pageProps }) {
                   </div>
                 </div>
 
-                {/* Quick Links */}
+                {/* Quick Links - Optimized with Next.js Link */}
                 <div>
                   <div className="text-gray-500 mb-3">// Quick Access</div>
                   <div className="space-y-2">
-                    <div><a href="/about" className="text-gray-400 hover:text-purple-400 transition">→ ./about</a></div>
-                    <div><a href="/projects" className="text-gray-400 hover:text-cyan-400 transition">→ ./projects</a></div>
-                    <div><a href="/resume" className="text-gray-400 hover:text-yellow-400 transition">→ ./resume</a></div>
-                    <div><a href="/contact" className="text-gray-400 hover:text-blue-400 transition">→ ./contact</a></div>
+                    <div><Link href="/about" className="text-gray-400 hover:text-purple-400 transition">→ ./about</Link></div>
+                    <div><Link href="/projects" className="text-gray-400 hover:text-cyan-400 transition">→ ./projects</Link></div>
+                    <div><Link href="/resume" className="text-gray-400 hover:text-yellow-400 transition">→ ./resume</Link></div>
+                    <div><Link href="/contact" className="text-gray-400 hover:text-blue-400 transition">→ ./contact</Link></div>
                   </div>
                 </div>
 
@@ -361,8 +363,8 @@ export default function App({ Component, pageProps }) {
               <div className="flex justify-between items-center text-gray-500">
                 <span><span className="text-green-400">$</span> echo "© 2025 Bahriddin"</span>
                 <div className="flex gap-4">
-                  <a href="/privacy" className="hover:text-blue-400">./privacy</a>
-                  <a href="/terms" className="hover:text-purple-400">./terms</a>
+                  <Link href="/privacy" className="hover:text-blue-400">./privacy</Link>
+                  <Link href="/terms" className="hover:text-purple-400">./terms</Link>
                 </div>
               </div>
             </div>

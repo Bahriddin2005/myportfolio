@@ -7,7 +7,8 @@ export default function TerminalHero() {
 
   useEffect(() => {
     setMounted(true)
-    // Start typing animation only after mount (prevents hydration errors)
+    // Optimized: Start typing animation only after mount (prevents hydration errors)
+    // Increased interval from 50ms to 80ms for better performance
     let index = 0
     const timer = setInterval(() => {
       if (index < fullText.length) {
@@ -16,7 +17,7 @@ export default function TerminalHero() {
       } else {
         clearInterval(timer)
       }
-    }, 50)
+    }, 80) // Optimized: 50ms → 80ms (reduces re-renders by 37%)
     return () => clearInterval(timer)
   }, [])
 
