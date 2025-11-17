@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react'
 
 export default function TerminalHero() {
   const [text, setText] = useState('')
+  const [mounted, setMounted] = useState(false)
   const fullText = 'const developer = new FullStackDeveloper("Bahriddin");'
 
   useEffect(() => {
+    setMounted(true)
+    // Start typing animation only after mount (prevents hydration errors)
     let index = 0
     const timer = setInterval(() => {
       if (index < fullText.length) {
@@ -69,8 +72,8 @@ export default function TerminalHero() {
         <div className="flex items-start gap-2 mt-4">
           <span className="text-green-400">$</span>
           <span className="flex items-center">
-            <span className="text-purple-400">{text}</span>
-            <span className="w-2 h-4 bg-green-400 ml-1 animate-pulse"></span>
+            <span className="text-purple-400" suppressHydrationWarning>{text}</span>
+            {mounted && <span className="w-2 h-4 bg-green-400 ml-1 animate-pulse"></span>}
           </span>
         </div>
       </div>
