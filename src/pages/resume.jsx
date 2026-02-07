@@ -1,13 +1,56 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import Head from 'next/head'
 
 export default function Resume() {
   const [profileImage, setProfileImage] = useState(null)
+  const [pdfLoading, setPdfLoading] = useState(false)
+  const pdfRef = useRef(null)
 
   React.useEffect(() => {
     const savedImage = typeof window !== 'undefined' ? localStorage.getItem('profileImage') : null
     if (savedImage) setProfileImage(savedImage)
   }, [])
+
+  const handleDownloadPdf = async () => {
+    if (typeof window === 'undefined' || !pdfRef.current) return
+    setPdfLoading(true)
+    try {
+      await new Promise(r => setTimeout(r, 350))
+      const html2canvas = (await import('html2canvas')).default
+      const { jsPDF } = await import('jspdf')
+
+      const el = pdfRef.current
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+      })
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.92)
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      const pageW = 210
+      const pageH = 297
+      const imgW = pageW
+      const imgH = (canvas.height * pageW) / canvas.width
+      let heightLeft = imgH
+      let position = 0
+
+      pdf.addImage(imgData, 'JPEG', 0, position, imgW, imgH)
+      while (heightLeft > pageH) {
+        pdf.addPage()
+        position = position - pageH
+        pdf.addImage(imgData, 'JPEG', 0, position, imgW, imgH)
+        heightLeft -= pageH
+      }
+      pdf.save('Bahriddin_Shavkatov_Resume.pdf')
+    } catch (err) {
+      console.error(err)
+      window.print()
+    } finally {
+      setPdfLoading(false)
+    }
+  }
 
   return (
     <>
@@ -40,15 +83,25 @@ export default function Resume() {
               </div>
               <div className="flex flex-col gap-3">
                 <div className="flex flex-col gap-1.5">
-                  <a
-                    href="/BAHRIDDIN_RESUME.pdf"
-                    download="Bahriddin_Shavkatov_Resume.pdf"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-sm shadow-lg hover:shadow-blue-500/30 transition-all"
+                  <button
+                    type="button"
+                    onClick={handleDownloadPdf}
+                    disabled={pdfLoading}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-70 disabled:cursor-not-allowed text-white rounded-xl font-bold text-sm shadow-lg hover:shadow-blue-500/30 transition-all cursor-pointer"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    Download PDF
-                  </a>
-                  <p className="text-slate-500 text-xs text-center">yoki brauzerda <span className="font-semibold text-slate-400">Ctrl+P → Save as PDF</span> — dizayn optimallashtirilgan</p>
+                    {pdfLoading ? (
+                      <>
+                        <span className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Yuklanmoqda...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        PDF yuklab olish
+                      </>
+                    )}
+                  </button>
+                  <p className="text-slate-500 text-xs text-center">Bir marta bosing — PDF fayl yuklanadi</p>
                 </div>
                 <div className="flex gap-6 text-sm">
                   <div className="flex items-center gap-2">
@@ -76,9 +129,105 @@ export default function Resume() {
         {/* ═══════════════════════════════════════════════════════════════
             MAIN RESUME CONTENT (screen + print)
         ═══════════════════════════════════════════════════════════════ */}
-        <div className="container mx-auto px-6 max-w-4xl py-10 print:py-0 print:max-w-none print:px-8">
+        <div
+          ref={pdfRef}
+          className={`resume-content container mx-auto px-6 max-w-4xl py-10 print:py-0 print:max-w-none print:px-8 print:overflow-visible ${pdfLoading ? 'pdf-capture' : ''}`}
+        >
+          {pdfLoading ? (
+            /* ═══ PDF: referens (minimal, toza, ATS-friendly) ═══ */
+            <div className="resume-pdf-template">
+              <div className="pdf-t-header">
+                <h1 className="pdf-t-name">BAHRIDDIN SHAVKATOV</h1>
+                <p className="pdf-t-title">Full-Stack Developer | Product Engineer</p>
+                <div className="pdf-t-contact">
+                  Email: hello@bahriddin.dev | Telegram: @baxadevuz | Location: Buxoro, Uzbekistan
+                </div>
+                <div className="pdf-t-contact pdf-t-contact-2">
+                  GitHub: github.com/baxadevuz | LinkedIn: linkedin.com/in/bahriddin | Portfolio: bahriddin.dev
+                </div>
+              </div>
+
+              <div className="pdf-t-body">
+                <section className="pdf-t-section">
+                  <h2 className="pdf-t-h2">Professional Summary</h2>
+                  <p className="pdf-t-p">
+                    Results-driven Full-Stack Developer with <b>3+ years</b> of experience building scalable web applications. Proven track record: <b>10K+ users</b>, <b>$50K+ revenue</b>. Expert in React, Django, Next.js, PostgreSQL. Strong focus on business metrics, user experience &amp; technical excellence.
+                  </p>
+                </section>
+
+                <section className="pdf-t-section">
+                  <h2 className="pdf-t-h2">Work Experience</h2>
+                  <div className="pdf-t-job">
+                    <div className="pdf-t-job-head">
+                      <span className="pdf-t-job-role">Lead Full-Stack Developer | Buxoro Bilimdonlar</span>
+                    </div>
+                    <div className="pdf-t-job-meta">Jan 2025 – Present | Buxoro, Uzbekistan</div>
+                    <ul className="pdf-t-ul">
+                      <li>Architected full-stack education platform serving 10,000+ active users</li>
+                      <li>Generated $50,000+ revenue in 3 months through subscription &amp; course sales</li>
+                      <li>Reduced infrastructure costs by 40% via optimization (Redis caching, CDN)</li>
+                      <li>Tech: Django, React, PostgreSQL, AWS S3, Stripe, Docker, Nginx</li>
+                    </ul>
+                  </div>
+                  <div className="pdf-t-job">
+                    <div className="pdf-t-job-head">
+                      <span className="pdf-t-job-role">Full-Stack Developer &amp; Founder | CodeLab</span>
+                    </div>
+                    <div className="pdf-t-job-meta">Mar 2024 – Dec 2024 | Remote</div>
+                    <ul className="pdf-t-ul">
+                      <li>Built interactive bootcamp platform with real-time code collaboration &amp; testing</li>
+                      <li>Achieved 95% completion rate with 500+ enrolled students, 4.8/5 rating</li>
+                      <li>Implemented live code editor using Monaco Editor with syntax highlighting</li>
+                      <li>Tech: Next.js, TypeScript, MongoDB, Socket.io, Redis, Monaco Editor</li>
+                    </ul>
+                  </div>
+                  <div className="pdf-t-job">
+                    <div className="pdf-t-job-head">
+                      <span className="pdf-t-job-role">Software Developer | Freelance</span>
+                    </div>
+                    <div className="pdf-t-job-meta">2023 – 2024 | Remote</div>
+                    <ul className="pdf-t-ul">
+                      <li>Developed 15+ web applications for clients in education, e-commerce, SaaS</li>
+                      <li>Increased client metrics by average 40% through UX &amp; performance optimization</li>
+                      <li>Tech: React, Vue.js, Node.js, Django, PostgreSQL, MongoDB, AWS</li>
+                    </ul>
+                  </div>
+                </section>
+
+                <section className="pdf-t-section">
+                  <h2 className="pdf-t-h2">Technical Skills</h2>
+                  <div className="pdf-t-skills">
+                    <p className="pdf-t-skill-line"><strong>Frontend:</strong> React, Next.js, Vue.js, TypeScript, JavaScript (ES6+), Tailwind CSS, Redux</p>
+                    <p className="pdf-t-skill-line"><strong>Backend:</strong> Django, Node.js, Express, FastAPI, REST API, GraphQL, WebSockets</p>
+                    <p className="pdf-t-skill-line"><strong>Database:</strong> PostgreSQL, MongoDB, Redis, MySQL, Elasticsearch</p>
+                    <p className="pdf-t-skill-line"><strong>DevOps &amp; Cloud:</strong> Docker, AWS (S3, EC2, RDS), Vercel, Git, CI/CD, Nginx</p>
+                    <p className="pdf-t-skill-line"><strong>Other:</strong> Stripe/Payment Integration, WebRTC, Chart.js, Figma, Agile/Scrum</p>
+                  </div>
+                </section>
+
+                <section className="pdf-t-section">
+                  <h2 className="pdf-t-h2">Key Projects</h2>
+                  <p className="pdf-t-proj-line"><strong>Buxoro Bilimdonlar</strong> – Education Platform | 10K+ users, $50K+ revenue</p>
+                  <p className="pdf-t-proj-line"><strong>CodeLab</strong> – Bootcamp Platform | 500+ students, 95% completion</p>
+                  <p className="pdf-t-proj-line"><strong>Smart Inventory</strong> – Management System | 20+ businesses, -80% errors</p>
+                  <p className="pdf-t-proj-line"><strong>Iqromax.uz</strong> – Production hardening | Telegram OTP, Android scroll fix</p>
+                </section>
+
+                <section className="pdf-t-section">
+                  <h2 className="pdf-t-h2">Education</h2>
+                  <p className="pdf-t-p"><strong>Buxoro State University</strong> · Computer Science &amp; Software Engineering · 2020–2024 · GPA 3.8/4.0 · Dean&apos;s List</p>
+                </section>
+
+                <section className="pdf-t-section">
+                  <h2 className="pdf-t-h2">Certifications</h2>
+                  <p className="pdf-t-p">Meta React Developer (Coursera) · AWS Cloud Practitioner · Google UX Design · JavaScript Algorithms (freeCodeCamp)</p>
+                </section>
+              </div>
+            </div>
+          ) : (
+            <>
           {/* ─── PDF/Print-only: Premium header (chiroyli dizayn) ─── */}
-          <div className="hidden print:block print:mb-6 resume-print-header">
+          <div className="hidden print:block print:mb-6 resume-print-header pdf-capture-header">
             <div className="resume-print-header-bar">
               <div className="resume-print-header-inner">
                 <h1 className="resume-print-name">Bahriddin Shavkatov</h1>
@@ -110,11 +259,11 @@ export default function Resume() {
           <section className="mb-10 print:mb-6">
             <h2 className="resume-heading">Professional Summary</h2>
             <p className="text-slate-700 leading-relaxed text-[15px] print:text-sm">
-              <strong className="text-slate-900">Full-Stack Engineer</strong> with <strong>3+ years</strong> of experience building scalable web applications and leading technical delivery. 
-              Delivered products serving <strong>10,000+ users</strong> and generating <strong>$50K+ revenue</strong>. 
-              Strong in <strong>system design</strong>, <strong>performance optimization</strong>, and <strong>security</strong> (auth, OTP, data integrity). 
-              Proficient in <strong>React</strong>, <strong>Next.js</strong>, <strong>Django</strong>, <strong>PostgreSQL</strong>, and modern DevOps. 
-              Focus on clean architecture, measurable impact, and production-grade quality.
+              <strong className="text-slate-900">Full-Stack Engineer</strong> with <strong>3+ years</strong> designing and shipping scalable systems. 
+              Delivered products serving <strong>10,000+ MAU</strong> and <strong>$50K+ revenue</strong>. 
+              Strong ownership: end-to-end architecture, <strong>performance</strong> (40% cost reduction via caching/CDN), and <strong>security</strong> (auth, OTP, data integrity). 
+              Proficient in <strong>React</strong>, <strong>Next.js</strong>, <strong>Django</strong>, <strong>PostgreSQL</strong>; experience with distributed systems patterns. 
+              Focus on measurable impact, clean code, and production reliability. Seeking to contribute to large-scale products at top-tier technology companies.
             </p>
           </section>
 
@@ -131,10 +280,9 @@ export default function Resume() {
                 </div>
                 <div className="text-blue-700 font-semibold text-sm mb-3">Buxoro Bilimdonlar · Buxoro, Uzbekistan</div>
                 <ul className="space-y-2 text-slate-700 text-[15px] print:text-sm">
-                  <li className="flex gap-2"><span className="text-blue-600 font-bold flex-shrink-0">•</span><span><strong>Architected and shipped</strong> full-stack online education platform serving <strong>10,000+ users</strong> with video streaming (AWS S3/CloudFront), Stripe payments, and analytics.</span></li>
-                  <li className="flex gap-2"><span className="text-blue-600 font-bold flex-shrink-0">•</span><span><strong>Drove</strong> <strong>$50,000+ revenue</strong> in 3 months via subscription model and course sales.</span></li>
-                  <li className="flex gap-2"><span className="text-blue-600 font-bold flex-shrink-0">•</span><span><strong>Reduced</strong> server costs by <strong>40%</strong> through query optimization, Redis caching, and CDN.</span></li>
-                  <li className="flex gap-2"><span className="text-blue-600 font-bold flex-shrink-0">•</span><span><strong>Tech:</strong> Django REST, React, PostgreSQL, AWS S3, Stripe, Docker, Nginx.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-600 font-bold flex-shrink-0">•</span><span><strong>Architected and shipped</strong> full-stack education platform serving <strong>10,000+ users</strong> — video streaming (AWS S3/CloudFront), Stripe payments, analytics dashboard.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-600 font-bold flex-shrink-0">•</span><span><strong>Drove</strong> <strong>$50,000+ revenue</strong> in 3 months via subscription model; <strong>reduced infrastructure cost 40%</strong> through query optimization, Redis caching, CDN.</span></li>
+                  <li className="flex gap-2"><span className="text-blue-600 font-bold flex-shrink-0">•</span><span><strong>Owned</strong> backend (Django REST), frontend (React), DevOps (Docker, Nginx). Tech: Django, React, PostgreSQL, AWS S3, Stripe, Redis.</span></li>
                 </ul>
               </div>
 
@@ -146,9 +294,8 @@ export default function Resume() {
                 </div>
                 <div className="text-indigo-700 font-semibold text-sm mb-3">CodeLab · Bootcamp Platform · Remote</div>
                 <ul className="space-y-2 text-slate-700 text-[15px] print:text-sm">
-                  <li className="flex gap-2"><span className="text-indigo-600 font-bold flex-shrink-0">•</span><span><strong>Built from scratch</strong> interactive bootcamp platform with <strong>real-time code collaboration</strong> (WebSocket), Monaco Editor, and automated test execution.</span></li>
-                  <li className="flex gap-2"><span className="text-indigo-600 font-bold flex-shrink-0">•</span><span><strong>Achieved</strong> <strong>95% course completion rate</strong> with <strong>500+ students</strong>; reduced mentor review time by 70%.</span></li>
-                  <li className="flex gap-2"><span className="text-indigo-600 font-bold flex-shrink-0">•</span><span><strong>Tech:</strong> Next.js, TypeScript, Node.js, MongoDB, Socket.io, Redis, Docker.</span></li>
+                  <li className="flex gap-2"><span className="text-indigo-600 font-bold flex-shrink-0">•</span><span><strong>Built from scratch</strong> real-time coding platform: WebSocket collaboration, Monaco Editor, automated test execution. <strong>500+ students</strong>, <strong>95%</strong> course completion rate.</span></li>
+                  <li className="flex gap-2"><span className="text-indigo-600 font-bold flex-shrink-0">•</span><span><strong>Reduced</strong> mentor review time by <strong>70%</strong> via automated feedback pipeline. Tech: Next.js, TypeScript, Node.js, MongoDB, Socket.io, Redis, Docker.</span></li>
                 </ul>
               </div>
 
@@ -160,9 +307,8 @@ export default function Resume() {
                 </div>
                 <div className="text-emerald-700 font-semibold text-sm mb-3">Freelance · Remote</div>
                 <ul className="space-y-2 text-slate-700 text-[15px] print:text-sm">
-                  <li className="flex gap-2"><span className="text-emerald-600 font-bold flex-shrink-0">•</span><span><strong>Shipped</strong> <strong>15+ web applications</strong> across education, e-commerce, and SaaS; improved client metrics by ~40% via performance and UX.</span></li>
-                  <li className="flex gap-2"><span className="text-emerald-600 font-bold flex-shrink-0">•</span><span><strong>Led production fixes</strong> for <strong>Iqromax.uz</strong>: resolved Android scroll (100dvh, overflow architecture), implemented Telegram Bot + OTP auth, enforced unique telegram_id to prevent duplicate accounts.</span></li>
-                  <li className="flex gap-2"><span className="text-emerald-600 font-bold flex-shrink-0">•</span><span><strong>Tech:</strong> React, Vue.js, Next.js, Node.js, Django, PostgreSQL, MongoDB.</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-600 font-bold flex-shrink-0">•</span><span><strong>Shipped</strong> <strong>15+ production web applications</strong> across ed-tech, e-commerce, SaaS; improved client metrics by <strong>~40%</strong> via performance and UX.</span></li>
+                  <li className="flex gap-2"><span className="text-emerald-600 font-bold flex-shrink-0">•</span><span><strong>Led production debugging</strong> for <strong>Iqromax.uz</strong>: fixed Android scroll (100dvh, overflow architecture), implemented Telegram Bot + OTP auth, enforced DB unique constraints (1 account per user). Tech: React, Vue.js, Next.js, Django, PostgreSQL, MongoDB.</span></li>
                 </ul>
               </div>
             </div>
@@ -269,8 +415,8 @@ export default function Resume() {
             </div>
           </section>
 
-          {/* ─── CTA (screen only) ─── */}
-          <section className="print:hidden bg-slate-900 text-white rounded-2xl p-8 text-center">
+          {/* ─── CTA (screen only, PDF da ko'rinmasin) ─── */}
+          <section className="print:hidden pdf-hide-cta bg-slate-900 text-white rounded-2xl p-8 text-center">
             <h2 className="text-xl font-bold mb-2">Open to opportunities</h2>
             <p className="text-slate-300 text-sm mb-6">Full-time · Contract · Remote or relocate</p>
             <div className="flex gap-4 justify-center flex-wrap">
@@ -279,6 +425,8 @@ export default function Resume() {
               <a href="https://github.com/baxadevuz" target="_blank" rel="noopener noreferrer" className="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl font-bold text-sm transition">GitHub</a>
             </div>
           </section>
+            </>
+          )}
         </div>
       </div>
 
@@ -358,18 +506,206 @@ export default function Resume() {
           margin-right: -2rem;
         }
 
+        /* PDF yig'ish: fon oq, CTA yashirin */
+        .resume-content.pdf-capture {
+          background: #ffffff;
+        }
+        .resume-content.pdf-capture .pdf-hide-cta {
+          display: none !important;
+        }
+
+        /* ═══ PDF: referens (minimal, toza, ATS-friendly) ═══ */
+        .resume-pdf-template {
+          width: 100%;
+          max-width: 210mm;
+          margin: 0 auto;
+          background: #ffffff;
+          font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+          color: #1a1a1a;
+        }
+        .pdf-t-header {
+          padding: 0 0 14px 0;
+          border-bottom: 2px solid #1a1a1a;
+          margin-bottom: 14px;
+        }
+        .pdf-t-name {
+          font-size: 22px;
+          font-weight: 800;
+          letter-spacing: 0.02em;
+          margin: 0;
+          line-height: 1.2;
+          color: #1a1a1a;
+        }
+        .pdf-t-title {
+          font-size: 12px;
+          font-weight: 600;
+          color: #333;
+          margin: 4px 0 0 0;
+        }
+        .pdf-t-contact {
+          font-size: 10px;
+          color: #444;
+          margin-top: 8px;
+          line-height: 1.4;
+        }
+        .pdf-t-contact-2 {
+          margin-top: 2px;
+        }
+        .pdf-t-body {
+          padding: 0;
+        }
+        .pdf-t-section {
+          margin-bottom: 14px;
+        }
+        .pdf-t-h2 {
+          font-size: 11px;
+          font-weight: 800;
+          color: #1a1a1a;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          margin: 0 0 8px 0;
+        }
+        .pdf-t-p {
+          font-size: 10.5px;
+          color: #333;
+          line-height: 1.5;
+          margin: 0;
+        }
+        .pdf-t-job {
+          margin-bottom: 12px;
+        }
+        .pdf-t-job-head {
+          margin-bottom: 0;
+        }
+        .pdf-t-job-role {
+          font-size: 11px;
+          font-weight: 700;
+          color: #1a1a1a;
+        }
+        .pdf-t-job-meta {
+          font-size: 10px;
+          color: #555;
+          margin-top: 2px;
+          margin-bottom: 6px;
+        }
+        .pdf-t-ul {
+          margin: 0;
+          padding-left: 16px;
+          font-size: 10px;
+          color: #333;
+          line-height: 1.45;
+          list-style: none;
+        }
+        .pdf-t-ul li {
+          margin-bottom: 3px;
+          position: relative;
+        }
+        .pdf-t-ul li::before {
+          content: '¢';
+          position: absolute;
+          left: -14px;
+          font-size: 10px;
+          color: #1a1a1a;
+          font-weight: 700;
+        }
+        .pdf-t-ul b {
+          font-weight: 700;
+          color: #1a1a1a;
+        }
+        .pdf-t-skills {
+          margin: 0;
+        }
+        .pdf-t-skill-line {
+          font-size: 10px;
+          color: #333;
+          margin: 0 0 4px 0;
+          line-height: 1.4;
+        }
+        .pdf-t-skill-line strong {
+          color: #1a1a1a;
+        }
+        .pdf-t-proj-line {
+          font-size: 10px;
+          color: #333;
+          margin: 0 0 4px 0;
+          line-height: 1.4;
+        }
+        .pdf-t-proj-line strong {
+          color: #1a1a1a;
+        }
+
+        /* PDF: premium dizayn — kompaniyalarni jalb qiladi */
+        .resume-content.pdf-capture .resume-heading {
+          border-bottom: none;
+          border-left: 4px solid #1d4ed8;
+          padding-left: 0.75rem;
+          margin-bottom: 1rem;
+          color: #0f172a;
+          font-size: 1.05rem;
+        }
+        .resume-content.pdf-capture section {
+          margin-bottom: 1.25rem;
+        }
+        .resume-content.pdf-capture .resume-print-header-bar {
+          padding: 1.25rem 2rem 1.5rem;
+          background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 50%, #0f172a 100%);
+          box-shadow: 0 2px 8px rgba(30, 64, 175, 0.2);
+        }
+        .resume-content.pdf-capture .resume-print-name {
+          font-size: 1.85rem;
+          letter-spacing: -0.03em;
+        }
+        .resume-content.pdf-capture .resume-print-title {
+          font-size: 1rem;
+          color: #93c5fd;
+          margin-top: 0.35rem;
+        }
+        .resume-content.pdf-capture .resume-print-accent-line {
+          height: 4px;
+          background: linear-gradient(90deg, #2563eb 0%, #06b6d4 50%, #8b5cf6 100%);
+          margin-top: 1rem;
+        }
+        .resume-content.pdf-capture .resume-print-impact strong {
+          color: #1d4ed8;
+        }
+        /* Loyiha kartochkalari PDF da yanada aniq */
+        .resume-content.pdf-capture [class*="border-l-4"] {
+          box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+          border-radius: 8px;
+        }
+        .resume-content.pdf-capture {
+          font-size: 15px;
+        }
+        .resume-content.pdf-capture .resume-print-contact {
+          font-size: 0.85rem;
+          color: #334155;
+        }
+        .resume-content.pdf-capture .resume-print-impact {
+          font-size: 0.85rem;
+        }
+
         @media print {
           @page {
             margin: 0.5in;
             size: A4;
           }
-          body {
+          html, body {
             background: #fff !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+            height: auto !important;
+            overflow: visible !important;
           }
           .resume-page {
             background: #fff !important;
+            min-height: auto !important;
+            overflow: visible !important;
+          }
+          .resume-content {
+            overflow: visible !important;
+          }
+          .resume-content section {
+            page-break-inside: avoid;
           }
           .print\\:hidden {
             display: none !important;
