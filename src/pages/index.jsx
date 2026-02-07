@@ -515,13 +515,54 @@ export default function Home() {
                   </div>
                 </div>
               </a>
+
+              {/* Project 7 - Iqromax.uz */}
+              <a href="/projects/iqromax-uz" className="group">
+                <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-teal-600 p-5 sm:p-6 md:p-8 hover:shadow-2xl hover:bg-teal-700 transition-all duration-300 text-white hover-lift">
+                  <div className="absolute -right-6 -top-6 sm:-right-8 sm:-top-8 text-6xl sm:text-7xl md:text-9xl opacity-20 group-hover:opacity-30 transition-opacity">📖</div>
+                  <div className="relative z-10">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl flex items-center justify-center text-2xl sm:text-3xl md:text-4xl mb-4 sm:mb-5 md:mb-6 group-hover:scale-125 group-hover:rotate-6 transition-all duration-500 shadow-xl">
+                      📖
+                    </div>
+                    <h3 className="text-xl sm:text-2xl md:text-3xl font-black mb-3 sm:mb-4 tracking-tight">
+                      Iqromax.uz
+                    </h3>
+                    <p className="text-teal-50 mb-3 sm:mb-4 text-sm sm:text-base md:text-lg leading-relaxed">
+                      Zamonaviy veb-sayt — kontent, foydalanuvchi tajribasi va mobil qurilmalar uchun optimallashtirilgan.
+                    </p>
+                    <div className="bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-4 sm:mb-5 md:mb-6 border border-white/30">
+                      <div className="grid grid-cols-2 gap-2 sm:gap-3 text-center">
+                        <div>
+                          <div className="text-xl sm:text-2xl md:text-3xl font-black text-white">Live</div>
+                          <div className="text-[10px] sm:text-xs text-teal-100 font-semibold">Sayt</div>
+                        </div>
+                        <div>
+                          <div className="text-lg sm:text-xl md:text-2xl font-black text-white truncate">iqromax.uz</div>
+                          <div className="text-[10px] sm:text-xs text-teal-100 font-semibold">Domen</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-1.5 sm:gap-2 flex-wrap mb-4 sm:mb-5 md:mb-6">
+                      <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold border border-white/30">Next.js</span>
+                      <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold border border-white/30">React</span>
+                      <span className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold border border-white/30">Tailwind</span>
+                    </div>
+                    <div className="mt-4 sm:mt-6 inline-flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-white text-teal-600 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base shadow-lg group-hover:shadow-xl group-hover:scale-105 transition-all">
+                      Case study ko&apos;rish
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </a>
             </div>
 
             <div className="text-center mt-8 sm:mt-10 md:mt-12">
               <a href="/projects" className="group inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gray-900 hover:bg-gray-800 text-gray-300 border-2 border-gray-700 hover:border-blue-600 rounded-lg font-mono font-bold text-sm sm:text-base shadow-xl hover:shadow-2xl transition-all duration-300">
                 <span className="text-green-400">$</span>
                 <span className="whitespace-nowrap">ls -la projects/</span>
-                <span className="text-gray-500 font-normal">(6)</span>
+                <span className="text-gray-500 font-normal">(7)</span>
                 <svg className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>

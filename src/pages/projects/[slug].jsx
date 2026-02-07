@@ -115,6 +115,81 @@ export default function ProjectDetail() {
               </h2>
               <p className="text-lg text-gray-700 leading-relaxed">{project.impact}</p>
             </div>
+
+            {/* Aniqlangan kamchiliklar va tuzatishlar (faqat fixes bo'lsa) */}
+            {project.fixes && (
+              <div className="border-t-2 border-gray-200 pt-16">
+                <h2 className="text-3xl font-bold mb-3 flex items-center gap-3">
+                  <span className="text-4xl">🛠</span>
+                  {project.fixes.sectionTitle}
+                </h2>
+                <p className="text-gray-600 mb-10 text-lg leading-relaxed">{project.fixes.intro}</p>
+
+                <div className="space-y-12">
+                  {project.fixes.items.map((item, index) => (
+                    <div key={index} className="bg-gray-50 rounded-2xl p-6 md:p-8 border-2 border-gray-100">
+                      <h3 className="text-xl font-black text-gray-900 mb-6 flex items-center gap-2">
+                        <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-600 text-white text-sm">{item.num}</span>
+                        {item.title}
+                      </h3>
+
+                      <div className="space-y-4">
+                        <div className="flex gap-3">
+                          <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center text-sm font-black">!</span>
+                          <div>
+                            <div className="text-sm font-black text-red-700 uppercase tracking-wide mb-1">Muammo</div>
+                            <p className="text-gray-700 leading-relaxed font-medium">{item.problem}</p>
+                          </div>
+                        </div>
+
+                        {item.cause && (
+                          <div className="flex gap-3">
+                            <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-black">?</span>
+                            <div>
+                              <div className="text-sm font-black text-amber-700 uppercase tracking-wide mb-1">Sabab</div>
+                              <p className="text-gray-700 leading-relaxed font-medium">{item.cause}</p>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex gap-3">
+                          <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-green-100 text-green-600 flex items-center justify-center text-sm font-black">✓</span>
+                          <div>
+                            <div className="text-sm font-black text-green-700 uppercase tracking-wide mb-1">Yechim</div>
+                            <p className="text-gray-700 leading-relaxed font-medium">{item.solution}</p>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                          <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm font-black">✔</span>
+                          <div>
+                            <div className="text-sm font-black text-emerald-700 uppercase tracking-wide mb-1">Natija</div>
+                            <p className="text-gray-700 leading-relaxed font-medium">{item.result}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-12 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 md:p-8 border-2 border-blue-100">
+                  <h3 className="text-xl font-black text-gray-900 mb-4 flex items-center gap-2">
+                    <span className="text-2xl">🏁</span>
+                    {project.fixes.conclusion.title}
+                  </h3>
+                  <p className="text-gray-700 font-medium mb-4">Bajarilgan ishlar natijasida:</p>
+                  <ul className="space-y-2 mb-6">
+                    {project.fixes.conclusion.points.map((point, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-green-600 font-black mt-0.5">✓</span>
+                        <span className="font-medium text-gray-800">{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-gray-800 font-semibold leading-relaxed">{project.fixes.conclusion.closing}</p>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 

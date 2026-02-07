@@ -167,6 +167,82 @@ export const projects = [
       { title: 'Calendar', emoji: '📅' },
       { title: 'Venues', emoji: '🏛️' },
     ]
+  },
+  {
+    id: 7,
+    title: 'Iqromax.uz',
+    slug: 'iqromax-uz',
+    image: '📖',
+    year: '2024',
+    summary: 'Iqromax.uz — zamonaviy veb-sayt. Kontent, foydalanuvchi tajribasi va mobil qurilmalar uchun optimallashtirilgan.',
+    description: 'Iqromax.uz domeni uchun yaratilgan professional veb-sayt. Zamonaviy dizayn, tez yuklanish va qulay foydalanish.',
+    challenge: 'Brend va auditoriyaga mos, ishonchli va zamonaviy ko\'rinishda sayt yaratish kerak edi.',
+    approach: 'Zamonaviy frontend texnologiyalari, responsive dizayn va SEO optimallashtirish. Foydalanuvchi tajribasiga e\'tibor.',
+    impact: 'Sayt ishga tushdi, foydalanuvchilar mobil va kompyuterda qulay foydalana oladi.',
+    tech: ['Next.js', 'React', 'Tailwind CSS'],
+    role: 'Full-Stack Developer',
+    duration: '2 oy',
+    featured: true,
+    metrics: {
+      users: 'Live',
+      growth: 'iqromax.uz'
+    },
+    links: {
+      live: 'https://iqromax.uz',
+      github: '#',
+      demo: 'https://iqromax.uz'
+    },
+    screenshots: [
+      { title: 'Bosh sahifa', emoji: '🏠' },
+      { title: 'Kontent', emoji: '📄' },
+    ],
+    fixes: {
+      sectionTitle: 'Aniqlangan kamchiliklar va bajarilgan tuzatishlar',
+      intro: 'Ushbu hujjatda iqromax.uz web-saytining mobil va autentifikatsiya qismlarida aniqlangan muammolar hamda ularni professional darajada qanday hal qilganim batafsil bayon etiladi.',
+      items: [
+        {
+          num: '1',
+          title: 'Mobil versiyada scroll muammosi (Android)',
+          problem: 'Sayt iOS (iPhone) qurilmalarda to\'g\'ri scroll bo\'lardi. Android telefonlarda esa sahifa qotib qolardi, pastga yoki yuqoriga siljimasdi. Foydalanuvchi kontentni ko\'ra olmas edi.',
+          cause: 'height: 100vh noto\'g\'ri ishlatilgan; overflow: hidden asosiy wrapperlarda qo\'llangan; ba\'zi container\'lar position: fixed bilan butun sahifani yopib qo\'ygan. Android brauzerlar iOS\'ga qaraganda qat\'iyroq ishlaydi.',
+          solution: 'Global scroll arxitekturasi qayta qurildi. Scroll faqat body orqali ishlaydigan qilindi. 100vh o\'rniga 100dvh ishlatildi. Root elementlarda overflow: visible tiklandi.',
+          result: 'Android va iOS qurilmalarda scroll 100% barqaror ishlay boshladi. Sahifa qotib qolish muammosi butunlay bartaraf etildi.'
+        },
+        {
+          num: '2',
+          title: 'Telegram orqali ro\'yxatdan o\'tishda username muammosi',
+          problem: 'Ro\'yxatdan o\'tishda faqat bitta Telegram username (baxadevuz) olinayotgan edi. Barcha foydalanuvchilar bitta username bilan yozilib qolardi. Bu xavfsizlik va ma\'lumotlar aniqligi uchun jiddiy xato edi.',
+          cause: 'Telegram username frontend\'dan olinayotgan edi. Telegram bilan real autentifikatsiya yo\'q edi. Username hardcode qilingan yoki noto\'g\'ri bog\'langan.',
+          solution: 'Telegram Bot + OTP asosidagi real autentifikatsiya joriy qilindi. Username faqat Telegram serveridan olinadigan qilindi. Frontend\'dan kiritilgan ma\'lumotlar ishonchsiz deb belgilandi. Backend orqali to\'liq tekshiruv joriy qilindi.',
+          result: 'Har bir foydalanuvchi o\'zining real Telegram username\'i bilan ro\'yxatdan o\'tadi. Aldov va noto\'g\'ri ma\'lumotlar butunlay yo\'q qilindi.'
+        },
+        {
+          num: '3',
+          title: 'Bitta Telegram = bitta account muammosi',
+          problem: 'Bir foydalanuvchi bir nechta akkaunt ochishi mumkin edi. Duplicate account\'lar paydo bo\'lish xavfi bor edi.',
+          cause: 'Telegram username va telegram_id unikalligi majburiy qilinmagan. Database darajasida cheklov yo\'q edi.',
+          solution: 'telegram_id va telegram_username uchun UNIQUE constraint qo\'yildi. Backend\'da qo\'shimcha tekshiruvlar yozildi. Bir Telegram akkaunt bilan qayta ro\'yxatdan o\'tish bloklandi.',
+          result: '1 ta Telegram akkaunt = 1 ta Iqromax akkaunt. Ma\'lumotlar bazasi toza va ishonchli bo\'ldi.'
+        },
+        {
+          num: '4',
+          title: 'OTP tasdiqlash jarayonining noto\'g\'ri ishlashi',
+          problem: 'OTP qayerga yuborilishi va qayerga kiritilishi aniq emas edi. Xavfsizlik past edi.',
+          solution: 'OTP faqat Telegram botga yuboriladigan qilindi. Foydalanuvchi OTP\'ni faqat web saytga kiritadi. OTP vaqt bilan cheklangan va bir martalik qilindi.',
+          result: 'Real vaqtli, xavfsiz va foydalanuvchi uchun qulay ro\'yxatdan o\'tish tizimi yaratildi.'
+        }
+      ],
+      conclusion: {
+        title: 'Yakuniy xulosa',
+        points: [
+          'Mobil (Android + iOS) muammolar to\'liq bartaraf etildi',
+          'Telegram autentifikatsiya tizimi real va xavfsiz qilindi',
+          'Duplicate account\'lar oldi olindi',
+          'Sayt professional va production darajaga olib chiqildi'
+        ],
+        closing: 'Iqromax.uz hozir: texnik jihatdan barqaror, xavfsiz, real foydalanuvchilar uchun ishonchli platformaga aylandi.'
+      }
+    }
   }
 ]
 
